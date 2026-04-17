@@ -90,3 +90,4 @@ Fallback behavior:
 - If patterns conflict (e.g. half Conventional, half not): note the ambiguity to the user, propose the user default, and offer to match Conventional instead.
 - If `gh` is not installed or not authed: skip the merged-PR sampling step silently; the `.github` template check and defaults still apply.
 - If `.github/PULL_REQUEST_TEMPLATE*` exists but is empty: treat as "no template".
+- `.github/PULL_REQUEST_TEMPLATE/` (directory form) can contain several templates keyed to work type (e.g. `bugfix.md`, `feature.md`). List the directory and pick the best match; if none fits, use the default file `.github/PULL_REQUEST_TEMPLATE.md` if present, else fall back to the user default.

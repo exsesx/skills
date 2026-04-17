@@ -38,7 +38,7 @@ Gather the full picture before drafting anything. Run only the commands you need
 
 **Convention signals (for commit/PR drafts):**
 - `git log -20 --pretty=%s` — scan last 20 subjects for an existing convention: Conventional Commits (`type(scope): subject`), gitmoji prefix, ticket prefix (`PROJ-123:`), casing, semicolon-as-separator, body frequency. A pattern is "clear" at ≥60% of the 20 subjects.
-- `ls .github/PULL_REQUEST_TEMPLATE* .github/pull_request_template* 2>/dev/null` — if a template exists, it is the PR body skeleton.
+- `ls .github/PULL_REQUEST_TEMPLATE.md .github/pull_request_template.md .github/PULL_REQUEST_TEMPLATE/ 2>/dev/null` — check both single-file and directory-form templates. The directory form (`.github/PULL_REQUEST_TEMPLATE/*.md`) lets a repo ship multiple templates; list its contents and pick the one matching the work type if present.
 - If preparing a PR and `gh` is available: `gh pr list --state merged --limit 10 --json title,body` — sample recent merged PR style. Skip silently if `gh` isn't installed or authed.
 
 Do not start drafting until inspection is complete. See [references/workflow.md](references/workflow.md) for detection heuristics.
@@ -106,7 +106,7 @@ See [references/examples.md](references/examples.md) for detection cues and good
 
 Precedence:
 
-1. **Fill the `.github` template if one exists.** Use `PULL_REQUEST_TEMPLATE.md` (or any variant under `.github/`) verbatim as the skeleton. Fill its sections; do not invent extra ones, do not remove sections the template includes.
+1. **Fill the `.github` template if one exists.** Check both `.github/PULL_REQUEST_TEMPLATE.md` (single-file form) and `.github/PULL_REQUEST_TEMPLATE/*.md` (directory form — a repo may ship multiple templates per work type). Use the matching template verbatim as the skeleton. Fill its sections; do not invent extra ones, do not remove sections the template includes.
 2. **Mirror recent merged PRs.** If `gh pr list --state merged` shows a consistent style (e.g. everyone uses `## What`/`## Why`, or no headings at all), match it. If a recent merged PR covers similar work, mirror its structure.
 3. **Otherwise, user default:**
    - Title: same style as commit subject.
