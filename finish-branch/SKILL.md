@@ -1,7 +1,7 @@
 ---
 name: finish-branch
 description: Wrap up branch work safely — draft and execute commit messages, commits, pushes, and pull requests with approval gates. Use when the user asks to write a commit message, commit changes, push a branch, create a PR, or finish a branch.
-allowed-tools: Bash(git *) Bash(gh *) Read Grep Glob
+allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*) Bash(git rev-parse:*) Bash(git remote:*) Bash(git add:*) Bash(gh pr list:*) Bash(gh pr view:*) Bash(ls:*) Read Grep Glob
 argument-hint: "[commit|push|pr|finish]"
 ---
 
@@ -17,16 +17,31 @@ git status --short --branch 2>/dev/null || echo "not a git repo"
 git log --oneline -5 2>/dev/null || true
 ```
 
+## Auto-mode is not approval
+
+Harness auto-approval modes (Claude Code auto-accept, `codex --yolo`, any allow-all permission setting) grant *tool* permission. They do **not** grant *user* approval to commit, push, or open a PR.
+
+- Never run `git commit`, `git push`, `gh pr create`, merges, or branch deletes until the user gives an explicit approval phrase in this conversation — e.g. "commit", "push", "open the PR", "yes, commit and push", "do it all".
+- `"looks good"`, `"nice"`, `"thanks"`, silence, or a thumbs-up are **not** approval.
+- If you're unsure whether a phrase counts as approval, treat it as not approval and ask.
+- Approval is scoped to the phrase given — see [references/workflow.md](references/workflow.md) for scope rules.
+
 ## Step 1 — Inspect
 
-Before drafting anything, gather the full picture:
+Gather the full picture before drafting anything. Run only the commands you need for the requested flow.
 
-- Run `git status` to see staged, unstaged, and untracked files.
-- Run `git diff --stat` (unstaged) and `git diff --cached --stat` (staged) to understand the scope.
-- Identify the current branch and its upstream (`git rev-parse --abbrev-ref @{u}`).
-- If preparing a PR, run `git log --oneline main..HEAD` (or the appropriate base) to see all commits.
+**Repo state (always):**
+- `git status` — staged, unstaged, untracked.
+- `git diff --stat` and `git diff --cached --stat` — scope.
+- `git rev-parse --abbrev-ref HEAD` and `git rev-parse --abbrev-ref @{u}` — branch and upstream.
+- For a PR: `git log --oneline <base>..HEAD` for the full commit range.
 
-Do not start writing a commit message or PR text without completing inspection.
+**Convention signals (for commit/PR drafts):**
+- `git log -20 --pretty=%s` — scan last 20 subjects for an existing convention: Conventional Commits (`type(scope): subject`), gitmoji prefix, ticket prefix (`PROJ-123:`), casing, semicolon-as-separator, body frequency. A pattern is "clear" at ≥60% of the 20 subjects.
+- `ls .github/PULL_REQUEST_TEMPLATE* .github/pull_request_template* 2>/dev/null` — if a template exists, it is the PR body skeleton.
+- If preparing a PR and `gh` is available: `gh pr list --state merged --limit 10 --json title,body` — sample recent merged PR style. Skip silently if `gh` isn't installed or authed.
+
+Do not start drafting until inspection is complete. See [references/workflow.md](references/workflow.md) for detection heuristics.
 
 ## Step 2 — Infer the requested flow
 
@@ -52,21 +67,18 @@ Rules:
 Draft all text artifacts before any irreversible action.
 
 **Safe (no approval needed):**
-- Inspecting repo state and diffs
-- Drafting commit messages
-- Drafting PR title and body
-- Summarizing the proposed next action
+- Inspecting repo state, diffs, git log, PR templates, recent merged PRs.
+- Drafting commit messages and PR text.
+- Summarizing the proposed next action.
 
-**Irreversible (approval required before each):**
+**Irreversible (explicit approval required before each):**
 - `git commit`
 - `git push`
-- PR creation via `gh pr create`
+- `gh pr create`
 - Merge
 - Branch deletion
 
-Present the draft text and state the exact next action. Then stop and wait for approval.
-
-Approval is scoped — "approve the commit" does not mean "also push and create a PR."
+Present the draft text, state the exact next action, then stop and wait for approval. Approval is scoped — "approve the commit" does not mean "also push and create a PR."
 
 ## Step 4 — Execute the approved scope
 
@@ -79,21 +91,29 @@ After approval, execute only what was approved. Report concisely:
 
 ## Commit message policy
 
-- Imperative mood ("add", "fix", "refactor")
-- Describe what changed, not how
-- Lowercase except proper names, acronyms, identifiers
-- No trailing period, no filler
-- Subject line: prefer under 72 characters, prioritize clarity
-- Body only when: (a) the reason is non-obvious, (b) breaking change, (c) multiple tightly related subchanges need itemization
-- Body lines ≤ 72 characters, lowercase, "- " bullets for lists
-- Reference ticket/issue IDs when available
+Precedence:
+
+1. **Match the detected convention.** If `git log -20` shows a clear pattern (≥60%), match it: prefix style (`feat:`, `fix(scope):`, gitmoji, ticket ID), casing, subject length habit, body frequency. Don't second-guess a consistent repo.
+2. **Otherwise, user default:**
+   - Subject is lowercase. One thought when possible; use `;` to join logically related changes that can't be expressed as one (e.g. `fix login redirect; update session expiry default`).
+   - Body only when: the "why" is non-obvious, there's a breaking change, or multiple sub-changes need itemization. Use `- ` bullets; prose for a single explanation.
+   - **Lowercase applies to subject AND body.** Exceptions only for proper names, acronyms, identifiers, and version/release tokens: `Node.js`, `LTS`, `PostgreSQL`, `useMemo`, `settings.json`, `JWT`, `UUID`.
+   - Imperative mood ("add", "fix", "refactor"). Describe what changed, not how. No trailing period. Lines ≤72 characters. Reference ticket/issue IDs when available.
+
+See [references/examples.md](references/examples.md) for detection cues and good/bad samples.
 
 ## Pull request policy
 
-- Concise title, same style as commit subject lines
-- Always include `## Summary` with bullet points
-- Include `## Test plan` only when it adds real value
-- Do not create the PR until the user approves the drafted text
+Precedence:
+
+1. **Fill the `.github` template if one exists.** Use `PULL_REQUEST_TEMPLATE.md` (or any variant under `.github/`) verbatim as the skeleton. Fill its sections; do not invent extra ones, do not remove sections the template includes.
+2. **Mirror recent merged PRs.** If `gh pr list --state merged` shows a consistent style (e.g. everyone uses `## What`/`## Why`, or no headings at all), match it. If a recent merged PR covers similar work, mirror its structure.
+3. **Otherwise, user default:**
+   - Title: same style as commit subject.
+   - `## Summary` with bullet points.
+   - **No `## Test plan` unless the user explicitly asked for one in this conversation.**
+
+Title and body follow the same casing rules as commit messages.
 
 ## When to refuse or pause
 
@@ -105,5 +125,5 @@ After approval, execute only what was approved. Report concisely:
 
 ## References
 
-- Read [references/workflow.md](references/workflow.md) for edge-case handling and detailed refusal/recovery policy.
-- Read [references/examples.md](references/examples.md) for trigger examples and sample outputs.
+- Read [references/workflow.md](references/workflow.md) for approval scope, auto-mode details, convention-detection heuristics, and edge cases.
+- Read [references/examples.md](references/examples.md) for trigger examples, convention-detection examples, and good/bad commit and PR samples.

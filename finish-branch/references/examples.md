@@ -200,3 +200,115 @@ Lowercase is the default, except for proper names, acronyms, and identifiers. Ex
 - React, PostgreSQL, MongoDB, OpenAI, AWS, Stripe
 - HTTP, JWT, SSE, UUID, SDK, CLI, API
 - file names and code identifiers (e.g. `useMemo`, `settings.json`)
+- version/release tokens (`Node.js`, `LTS`, `Python 3.12`)
+
+## Convention detection examples
+
+### Match detected Conventional Commits
+
+`git log -20 --pretty=%s` output:
+
+```
+feat(auth): add refresh token rotation
+fix(api): handle null user in session middleware
+chore(deps): bump typescript to 5.6
+refactor(auth): extract token validator
+docs: update README for new env vars
+```
+
+Drafted message (matches detected style):
+
+```
+feat(billing): add Stripe webhook handler for subscription events
+```
+
+### Match user default (no convention detected)
+
+`git log -20 --pretty=%s` output:
+
+```
+fix race condition in reconnect
+tweak styles on settings page
+add webhook handler
+update deps
+```
+
+Drafted message (user default — lowercase, no prefix):
+
+```
+add Stripe webhook handler for subscription events
+```
+
+### Match user default with semicolon when needed
+
+`git log` shows no convention. Diff touches two small logically linked fixes:
+
+```
+fix login redirect; update session expiry default
+```
+
+### Casing exceptions in the user default
+
+These stay cased even in a lowercase subject/body:
+
+```
+update Node.js to LTS
+migrate session store from MongoDB to PostgreSQL
+bump @types/node to 22.x
+```
+
+### PR body from `.github/PULL_REQUEST_TEMPLATE.md`
+
+Template:
+
+```markdown
+## What
+<!-- what changed -->
+
+## Why
+<!-- why it changed -->
+
+## Screenshots
+```
+
+Drafted PR body (fills the template, invents nothing):
+
+```
+## What
+- replaces express-session with jsonwebtoken
+- adds refresh token rotation with 7-day expiry
+
+## Why
+- session cookies don't work across our new mobile clients
+- JWT lets us issue short-lived access tokens with a rotating refresh token
+
+## Screenshots
+n/a
+```
+
+### PR body default (no template, no `## Test plan` by default)
+
+Good:
+
+```
+## Summary
+- adds README with package overview and environment setup
+- documents MCP client configuration for Cursor, Claude Desktop, and Claude Code
+```
+
+Bad — `## Test plan` added unprompted:
+
+```
+## Summary
+- adds README with package overview
+
+## Test plan
+- [ ] read the README
+```
+
+Corrected — drop the test plan unless the user asked for it:
+
+```
+## Summary
+- adds README with package overview
+```
