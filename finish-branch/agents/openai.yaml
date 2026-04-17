@@ -1,6 +1,6 @@
 interface:
   display_name: "Finish Branch"
-  short_description: "Commit, push, and open pull requests with approval gates."
-  default_prompt: "Inspect the branch state first, draft the required artifact, and wait for approval before any irreversible action."
+  short_description: "Commit, push, and open pull requests with explicit approval gates."
+  default_prompt: "Inspect branch state, infer local commit/PR style, draft text artifacts, and wait for explicit approval before any irreversible action."
 policy:
   allow_implicit_invocation: true

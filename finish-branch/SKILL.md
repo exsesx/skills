@@ -68,6 +68,70 @@ Present the draft text and state the exact next action. Then stop and wait for a
 
 Approval is scoped — "approve the commit" does not mean "also push and create a PR."
 
+## Approval and auto-mode safeguards
+
+When running in auto-approve modes (e.g., Claude Code auto mode, `codex --yolo`),
+never treat tool-level permission as user intent for git writes.
+
+- Do not commit, push, or create a PR without explicit user confirmation in-chat.
+- Accept only clear intent for irreversible actions (e.g., "commit now", "push it",
+  "create the PR", "do all three").
+- If intent is missing or ambiguous, stop at draft + next action request.
+- Approval stays scoped to the immediate action set and never widens implicitly.
+
+## Commit message policy
+
+### 1) infer project style first
+
+Before drafting a commit subject, inspect recent commit subjects:
+
+```!
+git log --format=%s -20 2>/dev/null || true
+```
+
+- If a clear convention appears (e.g., conventional commits), follow it.
+- If no reliable convention appears, use the fallback strategy below.
+
+### 2) fallback strategy
+
+- Use a subject that states WHAT changed, in imperative mood.
+- Prefer one logical subject; when two tightly related ideas are needed, separate
+  them with `;`.
+- Use lowercase by default across subject and body.
+- Use title case / uppercase only when semantically required for proper names,
+  acronyms, standards, or identifiers (e.g., `Node.js`, `LTS`, `JWT`, `API`).
+- No trailing period.
+- Prefer under 72 characters when possible.
+
+### 3) body rules
+
+- Include a body only when needed (non-obvious why, breaking change,
+  or multiple tightly related subchanges).
+- For multiple items, use `- ` bullets.
+- Keep body lines ≤ 72 characters.
+
+## Pull request policy
+
+### 1) infer repository conventions first
+
+Before drafting PR text:
+
+- Check for PR templates in `.github/` (e.g., `PULL_REQUEST_TEMPLATE*`,
+  `pull_request_template.md`, or `.github/PULL_REQUEST_TEMPLATE/*.md`).
+- If GitHub CLI is available, inspect recent/open PRs to infer local style
+  (`gh pr list`, optionally with `--limit`).
+- If a template or clear team style exists, adapt to it.
+
+### 2) fallback strategy
+
+If no usable template/style exists:
+
+- Draft a concise PR title.
+- Include a `## Summary` section with bullets.
+- Do **not** include `## Test plan` by default unless requested or truly needed.
+
+Do not create the PR until the user approves the drafted text.
+
 ## Step 4 — Execute the approved scope
 
 After approval, execute only what was approved. Report concisely:
@@ -76,24 +140,6 @@ After approval, execute only what was approved. Report concisely:
 - Branch name
 - Upstream branch if relevant
 - PR URL if created
-
-## Commit message policy
-
-- Imperative mood ("add", "fix", "refactor")
-- Describe what changed, not how
-- Lowercase except proper names, acronyms, identifiers
-- No trailing period, no filler
-- Subject line: prefer under 72 characters, prioritize clarity
-- Body only when: (a) the reason is non-obvious, (b) breaking change, (c) multiple tightly related subchanges need itemization
-- Body lines ≤ 72 characters, lowercase, "- " bullets for lists
-- Reference ticket/issue IDs when available
-
-## Pull request policy
-
-- Concise title, same style as commit subject lines
-- Always include `## Summary` with bullet points
-- Include `## Test plan` only when it adds real value
-- Do not create the PR until the user approves the drafted text
 
 ## When to refuse or pause
 

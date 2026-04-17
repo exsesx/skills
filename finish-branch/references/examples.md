@@ -27,6 +27,13 @@ Trigger examples, verification checklists, and good/bad patterns for commit mess
 - "wrap this up"
 - "take this through commit, push, and PR"
 
+### Auto-mode guardrail examples
+
+- User says: "draft commit + PR text, don't execute" → draft only, no git writes.
+- User says: "looks good" after draft → apply only to the last proposed action.
+- User says: "commit now, no push" → commit only.
+- User says: "do all three" after seeing drafts → commit, push, and create PR.
+
 ### Response pattern
 
 1. Inspect the branch state.
@@ -39,37 +46,37 @@ Trigger examples, verification checklists, and good/bad patterns for commit mess
 
 Before presenting a drafted commit message, check:
 
-1. Is it imperative mood? ("add", "fix", "refactor" — not "added", "fixes", "refactoring")
-2. Would a reviewer understand the scope from the subject alone?
-3. If there's a body, does it add information the subject doesn't?
-4. Is all text lowercase except proper names, acronyms, and identifiers?
+1. Was recent git history inspected for style (`git log --format=%s -20`)?
+2. Is it imperative mood? ("add", "fix", "refactor" — not "added", "fixes", "refactoring")
+3. Would a reviewer understand the scope from the subject alone?
+4. If there's a body, does it add information the subject doesn't?
+5. Is text lowercase by default, except necessary proper names/acronyms/identifiers?
+6. If no convention was inferred, was fallback semicolon strategy applied only when needed?
 
 ## Commit message examples
 
-### Good
+### Good — inferred conventional style
 
 ```
-fix race condition in WebSocket reconnect logic
+feat(auth): add token refresh endpoint
 ```
 
-```
-add Stripe webhook handler for subscription events
-```
-
-```
-refactor auth middleware to support JWT and API key
-```
-
-### Good — single subject covering related changes
+### Good — fallback single subject
 
 ```
 fix login redirect and suppress stale session warning
 ```
 
-### Good — semicolon when changes can't be expressed as one thought
+### Good — fallback semicolon split
 
 ```
 fix login redirect; update session expiry default
+```
+
+### Good — required casing exception
+
+```
+update Node.js runtime to LTS
 ```
 
 ### Good — with body
@@ -130,7 +137,12 @@ This should be split into separate commits.
 
 ## PR examples
 
-### Good — simple
+### Good — template-aware workflow
+
+If `.github/PULL_REQUEST_TEMPLATE.md` exists, follow that structure first and
+fill only relevant sections.
+
+### Good — fallback simple
 
 Title:
 
@@ -197,6 +209,6 @@ Add a `## Test plan` section to PR body ONLY when:
 
 Lowercase is the default, except for proper names, acronyms, and identifiers. Examples of things that stay cased:
 
-- React, PostgreSQL, MongoDB, OpenAI, AWS, Stripe
-- HTTP, JWT, SSE, UUID, SDK, CLI, API
+- React, PostgreSQL, MongoDB, OpenAI, AWS, Stripe, Node.js
+- HTTP, JWT, SSE, UUID, SDK, CLI, API, LTS
 - file names and code identifiers (e.g. `useMemo`, `settings.json`)
