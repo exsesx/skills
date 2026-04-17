@@ -52,3 +52,42 @@ When the branch has multiple commits ahead of base:
 
 - If `git diff` and `git diff --cached` are both empty and there are no untracked files, refuse to create a commit.
 - If the only changes are whitespace or formatting, mention this and ask if the user still wants to proceed.
+
+## Auto-mode and yolo modes
+
+Harness auto-approval (Claude Code auto-accept, `codex --yolo`, `--dangerously-skip-permissions`, allow-all permission settings) grants *tool* permission, not *user* approval. The two are independent.
+
+What counts as user approval to commit/push/open a PR:
+
+- An explicit verb from the user in this conversation: `"commit"`, `"push"`, `"open the PR"`, `"create the PR"`, `"yes, commit and push"`, `"do it all"`, `"merge it"`, `"delete the branch"`.
+- Scoped to the verb given: `"commit"` is not approval to push; `"push"` is not approval to PR; `"do it all"` covers the drafted set but not new destructive actions.
+
+What does **not** count:
+
+- Harness permission mode being permissive.
+- `"looks good"`, `"nice"`, `"thanks"`, `"ok"`, `"sure"`, emoji reactions, silence — these mean the draft reads well, not that the action is approved.
+- Approval of a previous action (earlier commit approval is not approval of a later push).
+
+If unsure whether a phrase counts, treat it as not approval and ask.
+
+## Convention detection signals
+
+Run `git log -20 --pretty=%s` and look for a dominant pattern. A pattern is "clear" when ≥60% of the 20 subjects match it.
+
+Signals to look for:
+
+- **Conventional Commits:** `type(scope): subject` or `type: subject` where `type` is one of `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `perf`, `build`, `ci`, `style`, `revert`. Trailing `!` or `BREAKING CHANGE:` footer indicates breaking.
+- **Gitmoji:** subjects start with an emoji (`:sparkles:`, `:bug:`, `✨`, `🐛`).
+- **Ticket prefix:** `PROJ-123:`, `[PROJ-123]`, `#1234` at the start.
+- **Casing habit:** all-lowercase vs Sentence case vs Title Case.
+- **Length habit:** median subject length — don't drift far from it.
+- **Semicolon separator:** frequent `;` inside subjects.
+- **Body frequency:** run `git log -20 --pretty=%B` and count commits with a blank line + body. If most commits have bodies, include one; if almost none do, don't add one for a trivial change.
+
+Fallback behavior:
+
+- If no clear pattern: use the user default from SKILL.md.
+- If patterns conflict (e.g. half Conventional, half not): note the ambiguity to the user, propose the user default, and offer to match Conventional instead.
+- If `gh` is not installed or not authed: skip the merged-PR sampling step silently; the `.github` template check and defaults still apply.
+- If `.github/PULL_REQUEST_TEMPLATE*` exists but is empty: treat as "no template".
+- `.github/PULL_REQUEST_TEMPLATE/` (directory form) can contain several templates keyed to work type (e.g. `bugfix.md`, `feature.md`). List the directory and pick the best match; if none fits, use the default file `.github/PULL_REQUEST_TEMPLATE.md` if present, else fall back to the user default.
