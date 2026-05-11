@@ -1,11 +1,11 @@
 ---
-name: finish-branch
-description: Wrap up branch work safely — draft and execute commit messages, commits, pushes, and pull requests with approval gates. Use when the user asks to write a commit message, commit changes, push a branch, create a PR, or finish a branch.
+name: git-fatality
+description: Finalize Git branch work safely — inspect changes, draft commit and pull request text, and require approval before commits, pushes, or PR creation. Use when the user asks to write a commit message, commit changes, push a branch, create a PR, finish a branch, or run git fatality.
 allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*) Bash(git rev-parse:*) Bash(git remote:*) Bash(git add:*) Bash(gh pr list:*) Bash(gh pr view:*) Bash(ls:*) Read Grep Glob
 argument-hint: "[commit|push|pr|finish]"
 ---
 
-# Finish Branch
+# Git Fatality
 
 ## Current state
 
@@ -54,7 +54,7 @@ Map the user's request to exactly one of these flows:
 | **commit + push** | "commit and push" |
 | **PR draft only** | "draft a PR", "write the PR title and body" |
 | **PR draft + creation** | "create the PR after I approve" |
-| **full finish-branch** | "finish this branch", "wrap this up" |
+| **full git-fatality** | "finish this branch", "wrap this up", "git fatality" |
 
 Rules:
 - If the request is narrow (e.g., "write a commit message"), stay narrow — do not propose a PR.

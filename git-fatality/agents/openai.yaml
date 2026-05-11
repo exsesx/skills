@@ -1,5 +1,5 @@
 interface:
-  display_name: "Finish Branch"
+  display_name: "Git Fatality"
   short_description: "Commit, push, and open pull requests with explicit approval gates."
   default_prompt: "Inspect branch state, infer local commit and PR style from git log and .github templates, draft text artifacts, and wait for explicit in-chat approval before any irreversible action."
 policy:

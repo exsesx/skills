@@ -21,10 +21,11 @@ Trigger examples, verification checklists, and good/bad patterns for commit mess
 - "write the PR title and body"
 - "create the PR after I approve the text"
 
-### Combined finish-branch flows
+### Combined git-fatality flows
 
 - "finish this branch"
 - "wrap this up"
+- "git fatality"
 - "take this through commit, push, and PR"
 
 ### Response pattern
