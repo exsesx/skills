@@ -96,9 +96,14 @@ Precedence:
 1. **Match the detected convention.** If `git log -20` shows a clear pattern (≥60%), match it: prefix style (`feat:`, `fix(scope):`, gitmoji, ticket ID), casing, subject length habit, body frequency. Don't second-guess a consistent repo.
 2. **Otherwise, user default:**
    - Subject is lowercase. One thought when possible; use `;` to join logically related changes that can't be expressed as one (e.g. `fix login redirect; update session expiry default`).
-   - Body only when: the "why" is non-obvious, there's a breaking change, or multiple sub-changes need itemization. Use `- ` bullets; prose for a single explanation.
+   - Body only when: the "why" is non-obvious, there's a breaking change, or multiple sub-changes need itemization.
+   - Commit bodies are not regular sentence prose.
+   - Use a compact semicolon-separated body only for two tightly related clauses.
+   - Use `- ` bullets for distinct points, preservation lists, future-work notes, or anything that would otherwise become paragraph prose.
    - **Lowercase applies to subject AND body.** Exceptions only for proper names, acronyms, identifiers, and version/release tokens: `Node.js`, `LTS`, `PostgreSQL`, `useMemo`, `settings.json`, `JWT`, `UUID`.
-   - Imperative mood ("add", "fix", "refactor"). Describe what changed, not how. No trailing period. Lines ≤72 characters. Reference ticket/issue IDs when available.
+   - **No sentence-ending periods anywhere — subject, bullets, or compact body.**
+   - Lowercase-after-period reads broken; don't produce it. If you need punctuation between thoughts, use `;` or switch to bullets.
+   - Imperative mood ("add", "fix", "refactor"). Describe what changed, not how. Lines ≤72 characters. Reference ticket/issue IDs when available.
 
 See [references/examples.md](references/examples.md) for detection cues and good/bad samples.
 

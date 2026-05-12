@@ -129,6 +129,31 @@ fix login bug and add dashboard charts and update README
 
 This should be split into separate commits.
 
+### Bad — prose body with sentence-ending periods and lowercase-after-period
+
+```
+revert composer redesign styles; keep HITL behavior
+
+design rolled back to develop visuals so HITL ships without
+unrelated UI changes. cross-tab run-lock, empty-composer submit
+disable, and stop-button approval rejection all preserved. a
+broader composer UI overhaul is planned for the next iteration.
+```
+
+The `. ` joins read as broken sentences because the style is lowercase.
+Commit bodies should use commit-message structure, not regular prose.
+When the body has distinct points, use bullets instead:
+
+```
+revert composer redesign styles; keep HITL behavior
+
+- rolls back composer visuals to match develop so HITL ships without
+  unrelated UI changes
+- preserves cross-tab run-lock, empty-composer submit disable, and
+  stop-button approval rejection
+- leaves the broader composer UI overhaul for the next iteration
+```
+
 ## PR examples
 
 ### Good — simple
@@ -180,8 +205,12 @@ Add a commit body (blank line after subject) ONLY when:
 Body format:
 
 - lines ≤ 72 characters
-- "- " bullets for multiple items, prose for single explanations
+- commit bodies are not regular sentence prose
+- use a compact semicolon-separated body for two tightly related clauses
+- use `- ` bullets for distinct points, preservation lists, future-work notes,
+  or anything that would otherwise become paragraph prose
 - lowercase except proper names, acronyms, identifiers
+- no sentence-ending periods in the subject, bullets, or compact body
 - explain WHY when the reason isn't obvious from the subject
 - reference ticket/issue IDs when available (e.g. "closes #1234")
 - for breaking changes, start body with "BREAKING CHANGE: <description>"
