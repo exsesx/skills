@@ -1,7 +1,7 @@
 ---
 name: git-fatality
 description: Finalize Git branch work safely — inspect changes, draft commit and pull request text, and require approval before commits, pushes, or PR creation. Use when the user asks to write a commit message, commit changes, push a branch, create a PR, finish a branch, or run git fatality.
-allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*) Bash(git rev-parse:*) Bash(git remote:*) Bash(git add:*) Bash(gh pr list:*) Bash(gh pr view:*) Bash(ls:*) Read Grep Glob
+allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*) Bash(git rev-parse:*) Bash(git remote:*) Bash(git add:*) Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh label list:*) Bash(ls:*) Read Grep Glob
 argument-hint: "[commit|push|pr|finish]"
 ---
 
@@ -82,12 +82,13 @@ Present the draft text, state the exact next action, then stop and wait for appr
 
 ## Step 4 — Execute the approved scope
 
-After approval, execute only what was approved. Report concisely:
+After approval, execute only what was approved. When a PR is created, also run the post-creation steps in the [Pull request policy](#after-gh-pr-create) (self-assign + label) — they are part of PR creation, not a separate approval. Report concisely:
 
 - What was done (committed, pushed, PR created)
 - Branch name
 - Upstream branch if relevant
 - PR URL if created
+- Assignee and any labels applied
 
 ## Commit message policy
 
@@ -119,6 +120,19 @@ Precedence:
    - **No `## Test plan` unless the user explicitly asked for one in this conversation.**
 
 Title and body follow the same casing rules as commit messages.
+
+### After `gh pr create`
+
+Once the PR is created, complete it with two automatic steps (no separate approval needed — they are part of the approved PR creation). Both default to on; the user's words in this conversation override them.
+
+1. **Assign to the current user.** Default: `gh pr edit <number> --add-assignee @me`. `@me` resolves to the authenticated GitHub account — never hardcode a username. Overrides:
+   - Named assignee ("assign alice", "assign me and bob") → use those instead of `@me`.
+   - Opt-out ("don't assign", "no assignee", "leave it unassigned") → skip assignment.
+2. **Apply matching existing labels.** Default: fetch the repo's labels with `gh label list`, then apply only labels that clearly match the work via `gh pr edit <number> --add-label <label>`. Prefer the repo's equivalents of `enhancement` (feature work), `bug` (bugfixes), and `documentation` (docs), but use the repo's actual label names. Never create new labels. Omit labels entirely if none clearly fit. Overrides:
+   - Named labels ("label it `bug`", "use `chore` and `docs`") → apply exactly those (still must exist in `gh label list`; never create).
+   - Opt-out ("no labels", "skip labels", "don't label it") → skip labeling.
+
+The override applies only to the action the user named — "don't assign" does not suppress labels, and "no labels" does not suppress the assignee.
 
 ## When to refuse or pause
 
