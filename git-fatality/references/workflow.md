@@ -28,6 +28,15 @@ When pushing to a branch with no upstream:
 - Tell the user what you are doing and why.
 - If the remote does not exist or the push fails, report the error and stop.
 
+## Handling branch creation
+
+Create a branch only when the requested flow needs one, such as a detached worktree, work still on `main`, or an explicit request to branch out.
+
+- If the current branch is already a suitable feature/fix/docs/chore branch, keep it.
+- If the user gives a branch name, use that name unless it is invalid or unsafe.
+- If creating a branch, draft the proposed branch name and wait for explicit approval before running `git switch -c <branch>`.
+- Do not rename an existing branch unless the user explicitly asks.
+
 ## Handling PR base branch
 
 - Default to `main` as the base branch.
@@ -57,9 +66,9 @@ When the branch has multiple commits ahead of base:
 
 Harness auto-approval (Claude Code auto-accept, `codex --yolo`, `--dangerously-skip-permissions`, allow-all permission settings) grants *tool* permission, not *user* approval. The two are independent.
 
-What counts as user approval to commit/push/open a PR:
+What counts as user approval to create a branch, commit, push, open a PR, merge, or delete a branch:
 
-- An explicit verb from the user in this conversation: `"commit"`, `"push"`, `"open the PR"`, `"create the PR"`, `"yes, commit and push"`, `"do it all"`, `"merge it"`, `"delete the branch"`.
+- An explicit verb from the user in this conversation: `"create the branch"`, `"branch out"`, `"commit"`, `"push"`, `"open the PR"`, `"create the PR"`, `"yes, commit and push"`, `"do it all"`, `"merge it"`, `"delete the branch"`.
 - Scoped to the verb given: `"commit"` is not approval to push; `"push"` is not approval to PR; `"do it all"` covers the drafted set but not new destructive actions.
 
 What does **not** count:
@@ -91,3 +100,22 @@ Fallback behavior:
 - If `gh` is not installed or not authed: skip the merged-PR sampling step silently; the `.github` template check and defaults still apply.
 - If `.github/PULL_REQUEST_TEMPLATE*` exists but is empty: treat as "no template".
 - `.github/PULL_REQUEST_TEMPLATE/` (directory form) can contain several templates keyed to work type (e.g. `bugfix.md`, `feature.md`). List the directory and pick the best match; if none fits, use the default file `.github/PULL_REQUEST_TEMPLATE.md` if present, else fall back to the user default.
+
+## Branch convention detection signals
+
+Run `git branch --format='%(refname:short)'` and sample remote branches with `git branch -r --format='%(refname:short)'` when local history is too small. Prefer local active branch names over stale remote names.
+
+Signals to look for:
+
+- **Type prefix:** `feat/`, `fix/`, `docs/`, `chore/`, `feature/`, `bugfix/`, or repo-specific equivalents.
+- **Ticket prefix:** `PROJ-123/short-topic`, `PROJ-123-short-topic`, or similar. Treat this as a repo convention only when branch samples clearly use it.
+- **Separator style:** slash paths (`feat/login`), hyphen-only names (`feat-login`), or nested paths (`team/feat/login`).
+- **Topic casing:** lowercase hyphenated topics, snake case, or sentence-like branch names.
+- **Topic length:** short topic only versus longer descriptive phrases.
+
+Fallback behavior:
+
+- If no clear pattern exists: use `feat/<topic>`, `fix/<topic>`, `docs/<topic>`, or `chore/<topic>`.
+- In the fallback, `<topic>` is lowercase, hyphen-separated, and based on the actual diff or requested work.
+- Do not include ticket IDs in fallback branch names.
+- If patterns conflict, note the ambiguity, propose the fallback, and offer the closest detected alternative.

@@ -1,7 +1,7 @@
 ---
 name: git-fatality
-description: Finalize Git branch work safely — inspect changes, draft commit and pull request text, and require approval before commits, pushes, or PR creation. Use when the user asks to write a commit message, commit changes, push a branch, create a PR, finish a branch, or run git fatality.
-allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*) Bash(git rev-parse:*) Bash(git remote:*) Bash(git add:*) Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh label list:*) Bash(ls:*) Read Grep Glob
+description: Finalize Git branch work safely — inspect changes, draft branch, commit, and pull request text, and require approval before branch creation, commits, pushes, or PR creation. Use when the user asks to write a commit message, commit changes, push a branch, create a PR, finish a branch, or run git fatality.
+allowed-tools: Bash(git status:*) Bash(git diff:*) Bash(git log:*) Bash(git branch:*) Bash(git switch:*) Bash(git rev-parse:*) Bash(git remote:*) Bash(git add:*) Bash(gh pr list:*) Bash(gh pr view:*) Bash(gh pr edit:*) Bash(gh label list:*) Bash(ls:*) Read Grep Glob
 argument-hint: "[commit|push|pr|finish]"
 ---
 
@@ -21,7 +21,7 @@ git log --oneline -5 2>/dev/null || true
 
 Harness auto-approval modes (Claude Code auto-accept, `codex --yolo`, any allow-all permission setting) grant *tool* permission. They do **not** grant *user* approval to commit, push, or open a PR.
 
-- Never run `git commit`, `git push`, `gh pr create`, merges, or branch deletes until the user gives an explicit approval phrase in this conversation — e.g. "commit", "push", "open the PR", "yes, commit and push", "do it all".
+- Never run `git switch -c`, `git commit`, `git push`, `gh pr create`, merges, or branch deletes until the user gives an explicit approval phrase in this conversation — e.g. "create the branch", "commit", "push", "open the PR", "yes, commit and push", "do it all".
 - `"looks good"`, `"nice"`, `"thanks"`, silence, or a thumbs-up are **not** approval.
 - If you're unsure whether a phrase counts as approval, treat it as not approval and ask.
 - Approval is scoped to the phrase given — see [references/workflow.md](references/workflow.md) for scope rules.
@@ -35,6 +35,7 @@ Gather the full picture before drafting anything. Run only the commands you need
 - `git diff --stat` and `git diff --cached --stat` — scope.
 - `git rev-parse --abbrev-ref HEAD` and `git rev-parse --abbrev-ref @{u}` — branch and upstream.
 - For a PR: `git log --oneline <base>..HEAD` for the full commit range.
+- If branch creation may be needed: `git branch --format='%(refname:short)'` and, when useful, `git branch -r --format='%(refname:short)'` — sample existing branch naming.
 
 **Convention signals (for commit/PR drafts):**
 - `git log -20 --pretty=%s` — scan last 20 subjects for an existing convention: Conventional Commits (`type(scope): subject`), gitmoji prefix, ticket prefix (`PROJ-123:`), casing, semicolon-as-separator, body frequency. A pattern is "clear" at ≥60% of the 20 subjects.
@@ -78,6 +79,9 @@ Draft all text artifacts before any irreversible action.
 - Merge
 - Branch deletion
 
+**Stateful (explicit approval required before acting):**
+- `git switch -c <branch>`
+
 Present the draft text, state the exact next action, then stop and wait for approval. Approval is scoped — "approve the commit" does not mean "also push and create a PR."
 
 ## Step 4 — Execute the approved scope
@@ -107,6 +111,20 @@ Precedence:
    - Imperative mood ("add", "fix", "refactor"). Describe what changed, not how. Lines ≤72 characters. Reference ticket/issue IDs when available.
 
 See [references/examples.md](references/examples.md) for detection cues and good/bad samples.
+
+## Branch naming policy
+
+Only apply this policy when a branch must be created. If the current branch is usable, keep it. Do not rename existing branches unless the user explicitly asks.
+
+Precedence:
+
+1. **Use the user's explicit branch name.** If the user provides a branch name, use that exact name unless it is invalid or unsafe.
+2. **Match the detected repo convention.** Inspect local branch names first, then remote branch names if useful. If a clear pattern exists, match its prefix style, separators, casing, and topic length.
+3. **Otherwise, user fallback:** use `feat/<topic>`, `fix/<topic>`, `docs/<topic>`, or `chore/<topic>` based on the work type. Keep `<topic>` short, lowercase, hyphen-separated, and derived from the actual change.
+
+Do not include ticket IDs in the universal fallback branch name. Ticket IDs are convention signals only: include one when the repo clearly uses ticket-prefixed branches or the user explicitly asks for it.
+
+Before creating a branch, present the proposed name and wait for explicit approval. See [references/workflow.md](references/workflow.md) for branch convention detection and edge cases.
 
 ## Pull request policy
 
