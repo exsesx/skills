@@ -1,344 +1,82 @@
-# Examples and Reference
-
-Trigger examples, verification checklists, and good/bad patterns for commit messages and pull requests.
-
-## Trigger examples
-
-### Commit message only
-
-- "write a commit message for this diff"
-- "what should the commit message be for these changes?"
-
-### Commit flows
-
-- "commit these changes"
-- "make the commit after you show me the message"
-- "commit and push this branch once I approve the message"
-
-### Pull request flows
-
-- "draft a PR for this branch"
-- "write the PR title and body"
-- "create the PR after I approve the text"
-
-### Combined git-fatality flows
-
-- "finish this branch"
-- "wrap this up"
-- "git fatality"
-- "take this through commit, push, and PR"
-
-### Response pattern
-
-1. Inspect the branch state.
-2. Draft the message or PR text.
-3. Show the draft and the exact next action.
-4. Wait for approval.
-5. Execute only the approved scope.
-
-## Commit message verification checklist
-
-Before presenting a drafted commit message, check:
-
-1. Is it imperative mood? ("add", "fix", "refactor" — not "added", "fixes", "refactoring")
-2. Would a reviewer understand the scope from the subject alone?
-3. If there's a body, does it add information the subject doesn't?
-4. Is all text lowercase except proper names, acronyms, and identifiers?
-
-## Commit message examples
-
-### Good
-
-```
-fix race condition in WebSocket reconnect logic
-```
-
-```
-add Stripe webhook handler for subscription events
-```
-
-```
-refactor auth middleware to support JWT and API key
-```
-
-### Good — single subject covering related changes
-
-```
-fix login redirect and suppress stale session warning
-```
-
-### Good — semicolon when changes can't be expressed as one thought
-
-```
-fix login redirect; update session expiry default
-```
-
-### Good — with body
-
-```
-migrate user table from MongoDB to PostgreSQL
-
-- adds new PostgreSQL schema with UUID primary keys
-- backfills existing records via migration script
-- removes mongoose dependency
-
-BREAKING CHANGE: user IDs are now UUIDs, not ObjectIds
-```
-
-### Bad — past tense
-
-```
-added new endpoint for user search
-```
-
-### Bad — too vague
-
-```
-fix bug
-```
-
-### Bad — describes HOW, not WHAT
-
-```
-use Promise.all instead of sequential awaits in batch processor
-```
-
-Better:
-
-```
-parallelize batch processor requests
-```
-
-### Bad — filler and verbosity
-
-```
-make some small improvements to the login page styling
-```
-
-Better:
-
-```
-clean up login page styles
-```
-
-### Bad — multiple unrelated changes crammed together
-
-```
-fix login bug and add dashboard charts and update README
-```
-
-This should be split into separate commits.
-
-### Bad — prose body with sentence-ending periods and lowercase-after-period
-
-```
-revert composer redesign styles; keep HITL behavior
-
-design rolled back to develop visuals so HITL ships without
-unrelated UI changes. cross-tab run-lock, empty-composer submit
-disable, and stop-button approval rejection all preserved. a
-broader composer UI overhaul is planned for the next iteration.
-```
-
-The `. ` joins read as broken sentences because the style is lowercase.
-Commit bodies should use commit-message structure, not regular prose.
-When the body has distinct points, use bullets instead:
-
-```
-revert composer redesign styles; keep HITL behavior
-
-- rolls back composer visuals to match develop so HITL ships without
-  unrelated UI changes
-- preserves cross-tab run-lock, empty-composer submit disable, and
-  stop-button approval rejection
-- leaves the broader composer UI overhaul for the next iteration
-```
-
-## PR examples
-
-### Good — simple
-
-Title:
-
-```
-add README with setup and MCP configuration docs
-```
-
-Body:
-
-```
-## Summary
-- adds README with package overview and environment setup
-- documents MCP client configuration for Cursor, Claude Desktop, and Claude Code
-```
-
-### Good — with test plan, when warranted
-
-Title:
-
-```
-migrate auth from session cookies to JWT
-```
-
-Body:
-
-```
-## Summary
-- replaces express-session with jsonwebtoken
-- adds refresh token rotation with 7-day expiry
-- updates all protected routes to use new middleware
-
-## Test plan
-- [ ] verify login flow issues new JWT + refresh token
-- [ ] verify expired access token triggers silent refresh
-- [ ] verify revoked refresh token forces re-login
-```
-
-## Body-inclusion rules
-
-Add a commit body (blank line after subject) ONLY when:
-
-- (a) the change is non-obvious and the "why" matters
-- (b) there are breaking changes
-- (c) multiple distinct changes need itemization
-
-Body format:
-
-- lines ≤ 72 characters
-- commit bodies are not regular sentence prose
-- use a compact semicolon-separated body for two tightly related clauses
-- use `- ` bullets for distinct points, preservation lists, future-work notes,
-  or anything that would otherwise become paragraph prose
-- lowercase except proper names, acronyms, identifiers
-- no sentence-ending periods in the subject, bullets, or compact body
-- explain WHY when the reason isn't obvious from the subject
-- reference ticket/issue IDs when available (e.g. "closes #1234")
-- for breaking changes, start body with "BREAKING CHANGE: <description>"
-
-## Test plan inclusion rules
-
-Add a `## Test plan` section to PR body ONLY when:
-
-- (a) the change requires manual verification steps
-- (b) there are non-obvious testing considerations
-- (c) explicitly requested
-
-## Acronym and identifier casing
-
-Lowercase is the default, except for proper names, acronyms, and identifiers. Examples of things that stay cased:
-
-- React, PostgreSQL, MongoDB, OpenAI, AWS, Stripe
-- HTTP, JWT, SSE, UUID, SDK, CLI, API
-- file names and code identifiers (e.g. `useMemo`, `settings.json`)
-- version/release tokens (`Node.js`, `LTS`, `Python 3.12`)
-
-## Convention detection examples
-
-### Match detected Conventional Commits
-
-`git log -20 --pretty=%s` output:
-
-```
-feat(auth): add refresh token rotation
-fix(api): handle null user in session middleware
-chore(deps): bump typescript to 5.6
-refactor(auth): extract token validator
-docs: update README for new env vars
-```
-
-Drafted message (matches detected style):
-
-```
-feat(billing): add Stripe webhook handler for subscription events
-```
-
-### Match user default (no convention detected)
-
-`git log -20 --pretty=%s` output:
-
-```
-fix race condition in reconnect
-tweak styles on settings page
-add webhook handler
-update deps
-```
-
-Drafted message (user default — lowercase, no prefix):
-
-```
-add Stripe webhook handler for subscription events
-```
-
-### Match user default with semicolon when needed
-
-`git log` shows no convention. Diff touches two small logically linked fixes:
-
-```
-fix login redirect; update session expiry default
-```
-
-### Casing exceptions in the user default
-
-These stay cased even in a lowercase subject/body:
-
-```
-update Node.js to LTS
-migrate session store from MongoDB to PostgreSQL
-bump @types/node to 22.x
-```
-
-### PR body from `.github/PULL_REQUEST_TEMPLATE.md`
-
-Template:
-
-```markdown
-## What
-<!-- what changed -->
-
-## Why
-<!-- why it changed -->
-
-## Screenshots
-```
-
-Drafted PR body (fills the template, invents nothing):
-
-```
-## What
-- replaces express-session with jsonwebtoken
-- adds refresh token rotation with 7-day expiry
-
-## Why
-- session cookies don't work across our new mobile clients
-- JWT lets us issue short-lived access tokens with a rotating refresh token
-
-## Screenshots
-n/a
-```
-
-### PR body default (no template, no `## Test plan` by default)
+# Text Conventions and Examples
+
+Read this reference when drafting commit or pull request text.
+
+## Detect conventions
+
+Explicit user and repository instructions always outrank inferred history.
+Otherwise sample up to 20 recent non-merge commits and, for PRs, recent merged
+PRs. Ignore obvious bot noise when it does not represent the human convention.
+
+Treat a pattern present in roughly 60% of the useful sample as strong evidence,
+but evaluate subject prefix, casing, length, punctuation, scope style, and body
+frequency separately. Small repositories may not have enough history for a
+single dominant style.
+
+## Commit fallback
+
+When no stronger convention exists:
+
+- use imperative mood and describe what changed
+- keep the subject lowercase except proper names, acronyms, identifiers, file
+  names, and version tokens
+- keep subject and body lines at 72 characters or fewer
+- avoid sentence-ending periods
+- use one thought when possible
+- join two tightly related thoughts with `;` only when one phrase is unclear
+- add a body only for non-obvious rationale, breaking changes, or multiple
+  distinct points
+- use bullets for distinct points rather than paragraph prose
+- reference issue or ticket identifiers only when present in context
 
 Good:
 
+```text
+fix login redirect; update session expiry default
 ```
+
+```text
+migrate session storage to PostgreSQL
+
+- adds UUID-backed session records
+- backfills active sessions during deployment
+- removes the MongoDB session adapter
+```
+
+Bad:
+
+```text
+added some fixes and updates
+```
+
+```text
+fix login bug and add dashboard charts and update README
+```
+
+Split the second example into independent commits.
+
+## Casing exceptions
+
+Preserve forms such as React, Node.js, PostgreSQL, OpenAI, HTTP, JWT, UUID,
+SDK, CLI, `useMemo`, `settings.json`, and version tokens such as Python 3.12.
+
+## Pull request fallback
+
+When there is no template or clear merged-PR convention:
+
+- match the title to the commit-subject convention
+- start the body with `## Summary`
+- use concise bullets grounded in the full branch diff
+- do not add `## Test plan` unless the user requests it or repository policy
+  requires it
+
+Example:
+
+```markdown
 ## Summary
-- adds README with package overview and environment setup
-- documents MCP client configuration for Cursor, Claude Desktop, and Claude Code
+- adds README setup and package configuration guidance
+- documents Codex and Claude Code skill invocation
 ```
 
-Bad — `## Test plan` added unprompted:
-
-```
-## Summary
-- adds README with package overview
-
-## Test plan
-- [ ] read the README
-```
-
-Corrected — drop the test plan unless the user asked for it:
-
-```
-## Summary
-- adds README with package overview
-```
+Do not invent tests, issue links, reviewers, deployment notes, breaking
+changes, or user impact that the branch does not support.

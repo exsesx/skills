@@ -1,93 +1,99 @@
-# Extended Workflow Policy
+# Execution Workflow
 
-This document covers edge cases and detailed policy beyond the core flow in SKILL.md.
+Read this reference only when executing a state-changing Git or GitHub stage.
 
-## Approval scope details
+## Authorization and state
 
-Approval should be scoped to the immediate action set. Examples:
+- An explicit imperative in the current request authorizes the named action
+  set. Drafting is still required, but a second approval round is not.
+- Preview-first wording such as "show me before committing" or "create it after
+  I approve" requires a stop after the draft.
+- A vague explicit invocation with no verbs requires a proposed action set and
+  approval.
+- If the user approves a proposal with "yes" or "do it", apply it only to that
+  proposal.
+- After staging, record `branch`, `HEAD`, and `staged_snapshot` from
+  `scripts/git-snapshot.sh`. Recheck all three immediately before committing.
 
-- "yes, commit" → commit only, do not push
-- "commit and push" → commit + push, do not create PR
-- "go ahead with the PR" → create PR, assumes commit and push are already done or approved in same request
-- "do it all" → commit + push + create PR, but still show draft text first
+## Branch creation
 
-If the user approves a narrow scope, do not widen it. If the user says "yes" without specifying, apply approval to the most recently proposed action set — do not escalate.
+Create a branch only when the user requests it or it is an explicit stage in an
+authorized end-to-end flow.
 
-## Handling staged versus unstaged changes
+If the current branch is already suitable and no new branch was requested,
+keep it. Do not rename an existing branch unless the user explicitly asks.
+Inspect active local branches first and remote branches second. Compare type or
+ticket prefixes, separator style, topic casing, and typical topic length; do
+not call a pattern clear from one incidental branch.
 
-- If there are staged changes and the user asks to commit, commit the staged changes.
-- If there are only unstaged changes and the user asks to commit, ask whether to stage all or specific files. Do not silently `git add -A`.
-- If there are both staged and unstaged changes, mention both and ask which set the user intends to commit.
-- Never stage files that look like secrets (`.env`, credentials, tokens) without explicit confirmation.
+Use this naming precedence:
 
-## Handling missing upstream
+1. the user's exact valid branch name
+2. a clear repository convention from active local and remote branches
+3. `feat/<topic>`, `fix/<topic>`, `docs/<topic>`, or `chore/<topic>`
 
-When pushing to a branch with no upstream:
+Keep fallback topics lowercase, short, and hyphen-separated. Include a ticket
+only when the user supplies one or the repository clearly requires it. If the
+name and base are both clear, announce the inferred name and continue under the
+existing branch-creation authorization. Pause for ambiguity, collision, an
+unexpected base, or a request to rename an existing branch.
 
-- Use `git push -u origin <branch>` to set the upstream.
-- Tell the user what you are doing and why.
-- If the remote does not exist or the push fails, report the error and stop.
+## Named synchronization prerequisites
 
-## Handling PR base branch
+When explicit invocation or a mixed finalization request names fetch, pull,
+merge, rebase, cherry-pick, or conflict resolution, perform only the named
+operation and strategy. Inspect dirty state and divergence first.
 
-- Default to `main` as the base branch.
-- If the repo uses a different default branch (e.g., `master`, `develop`), detect it from `git remote show origin` or the repo's default branch setting.
-- If the user specifies a base branch, use that.
+Do not silently substitute merge for rebase, pull for fetch, stash for a dirty
+tree, or force operations for a rejected update. A requested merge authorizes
+the merge commit produced by that merge, but not a later unrelated commit,
+push, or PR.
 
-## Multi-commit branches
+## Staging and commit scope
 
-When the branch has multiple commits ahead of base:
+- If specific files or changes are named, stage only those paths or hunks.
+- If the user says "all" or "everything", stage all inspected changes except
+  suspected secrets or other hazards that require confirmation.
+- If only staged changes exist, commit the staged set.
+- If staged and unstaged changes coexist, use the request and thread context to
+  identify intent. Pause only when the boundary cannot be determined safely.
+- For push-only work, never stage or commit dirty files.
+- Preserve unrelated changes even when they make the worktree dirty.
+- Split independent work into atomic commits when requested or when one commit
+  would conceal meaningful boundaries. Re-snapshot after each commit.
 
-- For commit message drafting, work with the current staged/unstaged changes only.
-- For PR drafting, consider the full commit range (`git log --oneline base..HEAD`).
-- Summarize the branch's work, not just the latest commit.
+## Verification
 
-## Recovering from tool failures
+Use repository instructions and established commands to choose proportionate
+checks. At minimum before committing:
 
-- If `git commit` fails (e.g., pre-commit hook), report the failure and the hook output. Do not retry with `--no-verify`.
-- If `gh pr create` fails, report the error. Offer to retry or to output the PR text for manual creation.
-- If `git push` is rejected (non-fast-forward), explain the situation. Do not force-push without explicit approval.
+- inspect the complete cached diff
+- run `git diff --cached --check`
+- confirm no generated-file drift or newly staged paths appeared
+- compare `branch`, `HEAD`, and `staged_snapshot` with the approved proposal
 
-## Empty or trivial changes
+After committing, verify `git show --stat --oneline HEAD` and current status.
+Before pushing, recheck the branch, selected remote, upstream, and exact commit
+range. After pushing, verify the local branch and upstream relationship.
+Preserve and report any hook-created or generated changes instead of staging
+them silently.
 
-- If `git diff` and `git diff --cached` are both empty and there are no untracked files, refuse to create a commit.
-- If the only changes are whitespace or formatting, mention this and ask if the user still wants to proceed.
+## Push behavior
 
-## Auto-mode and yolo modes
+Push the exact current branch to its configured upstream. If none exists,
+choose the configured push remote or the single clear repository remote and
+use `git push -u <remote> <branch>`. Do not assume `origin` when multiple
+remotes make the destination ambiguous.
 
-Harness auto-approval (Claude Code auto-accept, `codex --yolo`, `--dangerously-skip-permissions`, allow-all permission settings) grants *tool* permission, not *user* approval. The two are independent.
+Refresh remote-tracking refs when freshness matters and the environment allows
+it, but never turn a push request into an unrequested pull, merge, or rebase.
 
-What counts as user approval to commit/push/open a PR:
+## Failure recovery
 
-- An explicit verb from the user in this conversation: `"commit"`, `"push"`, `"open the PR"`, `"create the PR"`, `"yes, commit and push"`, `"do it all"`, `"merge it"`, `"delete the branch"`.
-- Scoped to the verb given: `"commit"` is not approval to push; `"push"` is not approval to PR; `"do it all"` covers the drafted set but not new destructive actions.
-
-What does **not** count:
-
-- Harness permission mode being permissive.
-- `"looks good"`, `"nice"`, `"thanks"`, `"ok"`, `"sure"`, emoji reactions, silence — these mean the draft reads well, not that the action is approved.
-- Approval of a previous action (earlier commit approval is not approval of a later push).
-
-If unsure whether a phrase counts, treat it as not approval and ask.
-
-## Convention detection signals
-
-Run `git log -20 --pretty=%s` and look for a dominant pattern. A pattern is "clear" when ≥60% of the 20 subjects match it.
-
-Signals to look for:
-
-- **Conventional Commits:** `type(scope): subject` or `type: subject` where `type` is one of `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `perf`, `build`, `ci`, `style`, `revert`. Trailing `!` or `BREAKING CHANGE:` footer indicates breaking.
-- **Gitmoji:** subjects start with an emoji (`:sparkles:`, `:bug:`, `✨`, `🐛`).
-- **Ticket prefix:** `PROJ-123:`, `[PROJ-123]`, `#1234` at the start.
-- **Casing habit:** all-lowercase vs Sentence case vs Title Case.
-- **Length habit:** median subject length — don't drift far from it.
-- **Semicolon separator:** frequent `;` inside subjects.
-- **Body frequency:** run `git log -20 --pretty=%B` and count commits with a blank line + body. If most commits have bodies, include one; if almost none do, don't add one for a trivial change.
-
-Fallback behavior:
-
-- If no clear pattern: use the user default from SKILL.md.
-- If patterns conflict (e.g. half Conventional, half not): note the ambiguity to the user, propose the user default, and offer to match Conventional instead.
-- If `gh` is not installed or not authed: skip the merged-PR sampling step silently; the `.github` template check and defaults still apply.
-- If `.github/PULL_REQUEST_TEMPLATE*` exists but is empty: treat as "no template".
-- `.github/PULL_REQUEST_TEMPLATE/` (directory form) can contain several templates keyed to work type (e.g. `bugfix.md`, `feature.md`). List the directory and pick the best match; if none fits, use the default file `.github/PULL_REQUEST_TEMPLATE.md` if present, else fall back to the user default.
+- Hook failure: report the hook output; do not use `--no-verify` automatically.
+- Signing failure: preserve the index; do not disable signing automatically.
+- Authentication or network failure: preserve state and report the blocker.
+- Non-fast-forward push: inspect divergence; do not force-push automatically.
+- Partial PR success: verify whether the PR exists before retrying creation.
+- Backend unavailable: finish safe local drafting and verification, then stop
+  before the blocked mutation.

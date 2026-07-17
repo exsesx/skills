@@ -1,7 +1,7 @@
 interface:
   display_name: "Git Fatality"
-  short_description: "Commit, push, and open pull requests with explicit approval gates."
+  short_description: "Finalize branches through commit, push, and PR"
   brand_color: "#E11D48"
-  default_prompt: "Inspect branch state, infer local commit and PR style from git log and .github templates, draft text artifacts, and wait for explicit in-chat approval before any irreversible action."
+  default_prompt: "Use $git-fatality to inspect the current Git state, execute only the branch, commit, push, and PR actions I request, and verify the result."
 policy:
   allow_implicit_invocation: true

@@ -1,14 +1,34 @@
 # Oleh Vanin Skills
 
-My personal collection of agent skills, installable via the [`skills`](https://agentskills.io) CLI. Works with Claude Code, Codex, and other agents that follow the Agent Skills standard.
+My personal collection of agent skills, installable through the
+[`skills`](https://agentskills.io) CLI. The skills use the portable Agent
+Skills format and are designed for both Codex and Claude Code.
 
 ## Skills
 
-- **git-fatality** — Finalize Git branch work safely. Drafts commit messages, commits, pushes, and PRs with explicit approval gates before any irreversible action.
+- **git-fatality** — Finalize Git work through an exact combination of branch
+  creation, scoped commits, pushes, and pull requests. Direct commands execute
+  after inspection without a redundant approval round; preview-first requests
+  still pause before mutation.
 
   ```bash
   npx skills@latest add exsesx/skills --skill git-fatality
   ```
+
+The skill can activate implicitly for commit, push, PR, and explicit Git
+finalization requests. Pull, merge, rebase, conflict-resolution, and branch
+management tasks do not activate it implicitly unless the same request also
+contains a covered finalization action.
+
+Explicit invocation is always supported:
+
+```text
+# Codex
+$git-fatality commit and push to this branch
+
+# Claude Code
+/git-fatality create a new branch, commit and push, then create a PR
+```
 
 ## Install
 
@@ -16,21 +36,22 @@ My personal collection of agent skills, installable via the [`skills`](https://a
 npx skills@latest add exsesx/skills
 ```
 
-The CLI detects your installed agents and prompts you for where to install (global vs. project-scoped, which agents to target).
+The CLI detects installed agents and prompts for global or project-scoped
+installation and target clients.
 
-To install one skill non-interactively:
+Install one skill non-interactively:
 
 ```bash
 npx skills@latest add exsesx/skills --skill git-fatality
 ```
 
-### Install from a local path
+Install from a local path:
 
 ```bash
 npx skills@latest add /path/to/skills --skill git-fatality
 ```
 
-### Manage
+Manage installed skills:
 
 ```bash
 npx skills list
@@ -40,8 +61,6 @@ npx skills remove <skill-name>
 
 ## Layout
 
-Each skill lives in its own top-level directory and is listed in the plugin manifest:
-
 ```text
 .
 ├── .claude-plugin/
@@ -49,7 +68,9 @@ Each skill lives in its own top-level directory and is listed in the plugin mani
 ├── git-fatality/
 │   ├── SKILL.md
 │   ├── agents/
-│   └── references/
+│   ├── evals/
+│   ├── references/
+│   └── scripts/
 └── LICENSE
 ```
 
