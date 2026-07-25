@@ -1,0 +1,175 @@
+[
+  {
+    "id": "T01",
+    "query": "$git-fatality commit and push to the current branch",
+    "should_trigger": true,
+    "note": "explicit Codex invocation"
+  },
+  {
+    "id": "T02",
+    "query": "/git-fatality create a new branch, make two commits, push it, and create a PR",
+    "should_trigger": true,
+    "note": "explicit Claude Code invocation"
+  },
+  {
+    "id": "T03",
+    "query": "$git-fatality merge develop into this branch and resolve conflicts",
+    "should_trigger": true,
+    "note": "explicit invocation always wins even for an adjacent Git operation"
+  },
+  {
+    "id": "T04",
+    "query": "Write a commit message for the staged diff",
+    "should_trigger": true
+  },
+  {
+    "id": "T05",
+    "query": "Commit only the staged changes",
+    "should_trigger": true
+  },
+  {
+    "id": "T06",
+    "query": "Push this branch only; do not commit or open a PR",
+    "should_trigger": true
+  },
+  {
+    "id": "T07",
+    "query": "Draft the PR title and body, but do not create it",
+    "should_trigger": true
+  },
+  {
+    "id": "T08",
+    "query": "Create a ready pull request for this branch",
+    "should_trigger": true
+  },
+  {
+    "id": "T09",
+    "query": "Open this as a draft PR",
+    "should_trigger": true
+  },
+  {
+    "id": "T10",
+    "query": "Commit these changes and push them to main",
+    "should_trigger": true
+  },
+  {
+    "id": "T11",
+    "query": "Create a branch named fix/login-loop, commit the fix, push it, and open a PR",
+    "should_trigger": true
+  },
+  {
+    "id": "T12",
+    "query": "Split this into sensible commits and publish the branch",
+    "should_trigger": true
+  },
+  {
+    "id": "T13",
+    "query": "Rebase onto main, then push the updated branch",
+    "should_trigger": true,
+    "note": "mixed request triggers for the push segment"
+  },
+  {
+    "id": "T14",
+    "query": "Pull the latest develop, resolve conflicts, then commit and push",
+    "should_trigger": true,
+    "note": "mixed request includes covered commit and push actions"
+  },
+  {
+    "id": "T15",
+    "query": "Update the existing PR title, body, labels, and assignee from the current branch",
+    "should_trigger": true
+  },
+  {
+    "id": "T16",
+    "query": "Show the current Git status",
+    "should_trigger": false
+  },
+  {
+    "id": "T17",
+    "query": "Review the working tree diff and tell me what changed",
+    "should_trigger": false
+  },
+  {
+    "id": "T18",
+    "query": "Pull origin/main into this branch",
+    "should_trigger": false
+  },
+  {
+    "id": "T19",
+    "query": "Merge develop into the current feature branch and resolve any conflicts",
+    "should_trigger": false
+  },
+  {
+    "id": "T20",
+    "query": "Rebase this branch onto main",
+    "should_trigger": false
+  },
+  {
+    "id": "T21",
+    "query": "Resolve the bun.lock conflict and continue the rebase",
+    "should_trigger": false
+  },
+  {
+    "id": "T22",
+    "query": "Write the merge commit message for this conflict resolution",
+    "should_trigger": false,
+    "note": "merge context outweighs the generic commit-message keyword"
+  },
+  {
+    "id": "T23",
+    "query": "Create a new feature branch for this work",
+    "should_trigger": false
+  },
+  {
+    "id": "T24",
+    "query": "Suggest a branch name for this fix",
+    "should_trigger": false
+  },
+  {
+    "id": "T25",
+    "query": "Stash my local changes before I switch branches",
+    "should_trigger": false
+  },
+  {
+    "id": "T26",
+    "query": "Delete the old release branch",
+    "should_trigger": false
+  },
+  {
+    "id": "T27",
+    "query": "Check whether PR 42 is mergeable",
+    "should_trigger": false
+  },
+  {
+    "id": "T28",
+    "query": "Merge PR 42 after its checks pass",
+    "should_trigger": false
+  },
+  {
+    "id": "T29",
+    "query": "Why did git push reject after my rebase?",
+    "should_trigger": false
+  },
+  {
+    "id": "T30",
+    "query": "Finish the implementation and run its tests",
+    "should_trigger": false
+  },
+  {
+    "id": "T31",
+    "query": "Wrap this up",
+    "should_trigger": false,
+    "note": "no explicit Git finalization intent"
+  },
+  {
+    "id": "T32",
+    "query": "Do not commit, push, or open a PR; only resolve the conflict",
+    "should_trigger": false
+  },
+  {
+    "id": "T33",
+    "query": "$git-fatality create a new documentation branch for the staged work and stop there",
+    "should_trigger": true,
+    "note": "explicit invocation activates a branch-only request"
+  }
+]

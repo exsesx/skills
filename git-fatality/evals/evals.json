@@ -1,0 +1,222 @@
+{
+  "skill_name": "git-fatality",
+  "evals": [
+    {
+      "id": "E01",
+      "prompt": "Use git-fatality. Commit the staged changes and push to the current branch.",
+      "expected_output": "Inspect and verify the staged scope, draft the commit message, commit, and push without asking for a redundant second approval.",
+      "assertions": [
+        "Executes exactly commit and push when state and destination are clear",
+        "Does not create or propose a pull request",
+        "Rechecks HEAD and staged_snapshot before committing",
+        "Verifies the commit and upstream state after execution"
+      ]
+    },
+    {
+      "id": "E02",
+      "prompt": "Use git-fatality to prepare a commit and push, but show me everything before you do either.",
+      "expected_output": "Inspect and draft the exact commit and push plan, then stop before mutation.",
+      "assertions": [
+        "Does not commit or push in the first response",
+        "Shows the proposed commit message and destination",
+        "Treats later yes or do it as approval for only the proposed set"
+      ]
+    },
+    {
+      "id": "E03",
+      "prompt": "Use git-fatality. Create a new branch for these changes, commit them, push it, and create a PR. No branch name is provided, but the repository has a clear fix/* convention.",
+      "expected_output": "Infer and announce a valid fix/* branch name, then execute the authorized branch, commit, push, and PR stages when the base and scope are clear.",
+      "assertions": [
+        "Uses the repository branch convention and a scope-derived topic",
+        "Does not require a second approval only because the name was inferred",
+        "Pauses instead of overwriting a colliding branch",
+        "Creates no actions outside branch, commit, push, and PR"
+      ]
+    },
+    {
+      "id": "E04",
+      "prompt": "Use git-fatality to push the current branch only. The branch is two commits ahead and the worktree also has staged, unstaged, and untracked changes.",
+      "expected_output": "Push the existing commits while preserving every dirty worktree and index change.",
+      "assertions": [
+        "Does not stage, unstage, commit, or discard dirty files",
+        "Does not draft a new commit message",
+        "Does not create a pull request",
+        "Verifies the upstream relationship after the push"
+      ]
+    },
+    {
+      "id": "E05",
+      "prompt": "Use git-fatality. Merge develop into this branch, resolve ordinary conflicts, then commit the feature changes and push. Do not create a PR.",
+      "expected_output": "Perform only the named merge prerequisite followed by the authorized commit and push stages, with no PR or inferred rebase.",
+      "assertions": [
+        "Inspects dirty state and divergence before merging",
+        "Does not substitute pull or rebase for the requested merge",
+        "Does not ask again for commit and push when scope remains clear",
+        "Does not create a pull request"
+      ]
+    },
+    {
+      "id": "E06",
+      "prompt": "Use git-fatality and split the independent auth, documentation, and dependency changes into sensible commits, then push them.",
+      "expected_output": "Create coherent atomic commits with explicit file or hunk allocation and then push the resulting branch.",
+      "assertions": [
+        "Inspects the full diff rather than only diff stats",
+        "Does not hide unrelated changes in one commit",
+        "Re-snapshots after each commit",
+        "Summarizes every committed group accurately"
+      ]
+    },
+    {
+      "id": "E07",
+      "prompt": "A commit message was drafted, but a staged file changed afterward without changing the diff stat. Continue using git-fatality.",
+      "expected_output": "Detect the staged content fingerprint change, invalidate the stale proposal, and stop before committing.",
+      "assertions": [
+        "Compares staged_snapshot rather than only file names or diff stats",
+        "Does not commit the changed index under stale authorization",
+        "Re-inspects and drafts an updated message"
+      ]
+    },
+    {
+      "id": "E08",
+      "prompt": "Use git-fatality to create a PR, but an open PR already exists for the same head branch.",
+      "expected_output": "Report the existing PR and avoid both duplicate creation and unapproved overwrites.",
+      "assertions": [
+        "Checks for an open PR before gh pr create",
+        "Does not create a duplicate PR",
+        "Does not overwrite title, body, assignee, or labels under creation-only authorization",
+        "Offers a concrete update proposal"
+      ]
+    },
+    {
+      "id": "E09",
+      "prompt": "Draft and create a PR for a repository whose default branch stores its template at docs/PULL_REQUEST_TEMPLATE/feature.md.",
+      "expected_output": "Read the feature template from the default branch, preserve its structure, and create the PR with grounded content.",
+      "assertions": [
+        "Searches root, docs, and .github template locations case-insensitively",
+        "Uses the default-branch template rather than an unrelated working-tree copy",
+        "Preserves every template section and ordering",
+        "Does not add an unrequested test-plan section"
+      ]
+    },
+    {
+      "id": "E10",
+      "prompt": "Use git-fatality to create a feature PR. Existing labels are bug, enhancement, and documentation; use the defaults for metadata.",
+      "expected_output": "Create the PR, assign @me, and apply only the existing enhancement label, preferably during creation.",
+      "assertions": [
+        "Fetches actual labels with a nontrivial result limit",
+        "Never creates or invents labels",
+        "Uses @me instead of hardcoding a username",
+        "Verifies the resulting assignee and labels from GitHub"
+      ]
+    },
+    {
+      "id": "E11",
+      "prompt": "The approved git-fatality commit fails because the SSH signing agent is unavailable.",
+      "expected_output": "Preserve the staged scope, report the signing failure, and stop without weakening repository security.",
+      "assertions": [
+        "Does not use --no-gpg-sign or disable commit signing",
+        "Does not push or create a PR after the failed commit",
+        "Preserves and reports the staged snapshot",
+        "Does not claim the commit succeeded"
+      ]
+    },
+    {
+      "id": "E12",
+      "prompt": "A git-fatality push is rejected as non-fast-forward.",
+      "expected_output": "Inspect and report divergence without silently selecting a recovery strategy.",
+      "assertions": [
+        "Does not force-push",
+        "Does not automatically pull, merge, or rebase",
+        "Requests or uses explicit authorization for the chosen recovery action",
+        "Preserves the local branch and worktree"
+      ]
+    },
+    {
+      "id": "E13",
+      "prompt": "Use git-fatality to create a draft PR. The branch has multiple commits and an uncommitted unrelated file.",
+      "expected_output": "Create a remote draft PR from the pushed branch range while excluding the uncommitted file from its summary.",
+      "assertions": [
+        "Uses the full base...HEAD range for title and body",
+        "Uses remote draft state rather than confusing it with text drafting",
+        "Does not include or commit the unrelated file",
+        "Verifies draft state, base, head, URL, assignee, and labels"
+      ]
+    },
+    {
+      "id": "E14",
+      "prompt": "A git-fatality commit was approved on branch fix/session at HEAD abc123, but the repository was switched to another branch pointing at the same HEAD before commit time.",
+      "expected_output": "Detect the branch change, invalidate the stale authorization, and stop before committing even though HEAD and the staged snapshot are unchanged.",
+      "assertions": [
+        "Binds authorization to branch as well as HEAD and staged_snapshot",
+        "Does not commit on the newly selected branch",
+        "Reports the state drift and re-scopes before continuing"
+      ]
+    },
+    {
+      "id": "E15",
+      "prompt": "Git-fatality prepared a push to origin/feature, but the configured upstream or selected remote changed before the push command ran.",
+      "expected_output": "Detect the destination change and stop before publishing commits to an unapproved remote or branch.",
+      "assertions": [
+        "Rechecks branch, remote, upstream, and exact commit range immediately before push",
+        "Does not push to the changed destination under stale authorization",
+        "Requests confirmation only after presenting the new concrete destination"
+      ]
+    },
+    {
+      "id": "E16",
+      "prompt": "/git-fatality merge develop into this branch and stop there; do not push or create a PR.",
+      "expected_output": "Honor explicit skill invocation for the named merge while inferring no commit, push, or PR finalization stages.",
+      "assertions": [
+        "Treats explicit invocation as activation even for a merge-only request",
+        "Inspects dirty state and divergence before the merge",
+        "Does not infer push, PR creation, or an unrelated later commit",
+        "Does not substitute rebase or pull for merge"
+      ]
+    },
+    {
+      "id": "E17",
+      "prompt": "Use git-fatality. Commit these changes; the work needs a body explaining several distinct points, and the repository has no dominant message convention.",
+      "expected_output": "Draft a commit message using the user default style: lowercase subject and body, `- ` bullets for the distinct points, and no sentence-ending periods anywhere.",
+      "assertions": [
+        "Reads references/examples.md before drafting the message",
+        "Uses `- ` bullets for distinct points rather than paragraph prose",
+        "Writes no sentence-ending periods in the subject, bullets, or compact body",
+        "Keeps subject and body lowercase except proper names, acronyms, and identifiers",
+        "Keeps body lines within 72 characters"
+      ]
+    },
+    {
+      "id": "E18",
+      "prompt": "Use git-fatality. Create a branch for this fix, commit it, and push. Local branches provide no useful convention; remote refs include origin/HEAD, origin/fix/session-timeout, and origin/fix/login-loop.",
+      "expected_output": "Infer a fix/* branch from normalized remote branch names, then execute the authorized branch, commit, and push stages.",
+      "assertions": [
+        "Removes the remote namespace before comparing branch names",
+        "Excludes the symbolic origin/HEAD ref from convention detection",
+        "Does not treat origin as a repository branch prefix",
+        "Does not require a second approval only because the name was inferred"
+      ]
+    },
+    {
+      "id": "E19",
+      "prompt": "Use git-fatality to commit these changes, push, and create a PR. The current branch fix/session-refresh is suitable and I did not request a new branch.",
+      "expected_output": "Keep the current suitable branch and execute only commit, push, and PR creation.",
+      "assertions": [
+        "Does not create or rename a branch",
+        "Uses fix/session-refresh as the PR head",
+        "Executes no action outside commit, push, and PR creation",
+        "Verifies the resulting branch, upstream, and PR state"
+      ]
+    },
+    {
+      "id": "E20",
+      "prompt": "Use git-fatality to create a new branch for the staged documentation changes and stop there. The repository has no clear branch convention.",
+      "expected_output": "Infer and create a docs/<topic> branch under the existing authorization, then stop.",
+      "assertions": [
+        "Uses a short lowercase hyphen-separated docs/* fallback",
+        "Does not invent a ticket identifier",
+        "Does not ask for a redundant second approval",
+        "Does not commit, push, or create a pull request"
+      ]
+    }
+  ]
+}
