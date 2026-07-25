@@ -172,6 +172,18 @@
         "Does not infer push, PR creation, or an unrelated later commit",
         "Does not substitute rebase or pull for merge"
       ]
+    },
+    {
+      "id": "E17",
+      "prompt": "Use git-fatality. Commit these changes; the work needs a body explaining several distinct points, and the repository has no dominant message convention.",
+      "expected_output": "Draft a commit message using the user default style: lowercase subject and body, `- ` bullets for the distinct points, and no sentence-ending periods anywhere.",
+      "assertions": [
+        "Reads references/examples.md before drafting the message",
+        "Uses `- ` bullets for distinct points rather than paragraph prose",
+        "Writes no sentence-ending periods in the subject, bullets, or compact body",
+        "Keeps subject and body lowercase except proper names, acronyms, and identifiers",
+        "Keeps body lines within 72 characters"
+      ]
     }
   ]
 }

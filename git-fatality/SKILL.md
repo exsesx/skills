@@ -66,8 +66,9 @@ Read [references/workflow.md](references/workflow.md) before executing any
 state-changing stage. Read
 [references/pull-requests.md](references/pull-requests.md) only when PR text or
 PR mutation is requested. Read
-[references/examples.md](references/examples.md) when drafting commit or PR
-text, especially when repository conventions are unclear.
+[references/examples.md](references/examples.md) before drafting any commit or
+PR text; this is mandatory, not conditional on how clear the repository
+conventions look.
 
 ## Inspect before drafting or acting
 
@@ -157,7 +158,61 @@ Apply this precedence:
 1. explicit user instructions
 2. repository instructions and PR templates
 3. a clear convention in recent history or merged PRs
-4. the user defaults in [references/examples.md](references/examples.md)
+4. the user defaults below
 
 Do not claim tests, checks, labels, assignees, pushes, or PR state that were not
 verified.
+
+### Commit message policy
+
+Precedence:
+
+1. **Match the detected convention.** If `git log -20` shows a clear pattern
+   (≥60%), match it: prefix style (`feat:`, `fix(scope):`, gitmoji, ticket ID),
+   casing, subject length habit, body frequency. Don't second-guess a
+   consistent repo.
+2. **Otherwise, user default:**
+   - Subject is lowercase. One thought when possible; use `;` to join logically
+     related changes that can't be expressed as one (e.g. `fix login redirect;
+     update session expiry default`).
+   - Body only when: the "why" is non-obvious, there's a breaking change, or
+     multiple sub-changes need itemization.
+   - Commit bodies are not regular sentence prose.
+   - Use a compact semicolon-separated body only for two tightly related
+     clauses.
+   - Use `- ` bullets for distinct points, preservation lists, future-work
+     notes, or anything that would otherwise become paragraph prose.
+   - **Lowercase applies to subject AND body.** Exceptions only for proper
+     names, acronyms, identifiers, and version/release tokens: `Node.js`,
+     `LTS`, `PostgreSQL`, `useMemo`, `settings.json`, `JWT`, `UUID`.
+   - **No sentence-ending periods anywhere — subject, bullets, or compact
+     body.**
+   - Lowercase-after-period reads broken; don't produce it. If you need
+     punctuation between thoughts, use `;` or switch to bullets.
+   - Imperative mood ("add", "fix", "refactor"). Describe what changed, not
+     how. Lines ≤72 characters. Reference ticket/issue IDs when available.
+
+See [references/examples.md](references/examples.md) for detection cues and
+good/bad samples.
+
+### Pull request policy
+
+Precedence:
+
+1. **Fill the `.github` template if one exists.** Check both
+   `.github/PULL_REQUEST_TEMPLATE.md` (single-file form) and
+   `.github/PULL_REQUEST_TEMPLATE/*.md` (directory form — a repo may ship
+   multiple templates per work type). Use the matching template verbatim as the
+   skeleton. Fill its sections; do not invent extra ones, do not remove
+   sections the template includes.
+2. **Mirror recent merged PRs.** If `gh pr list --state merged` shows a
+   consistent style (e.g. everyone uses `## What`/`## Why`, or no headings at
+   all), match it. If a recent merged PR covers similar work, mirror its
+   structure.
+3. **Otherwise, user default:**
+   - Title: same style as commit subject.
+   - `## Summary` with bullet points.
+   - **No `## Test plan` unless the user explicitly asked for one in this
+     conversation.**
+
+Title and body follow the same casing rules as commit messages.
