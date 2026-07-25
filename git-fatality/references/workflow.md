@@ -22,9 +22,13 @@ authorized end-to-end flow.
 
 If the current branch is already suitable and no new branch was requested,
 keep it. Do not rename an existing branch unless the user explicitly asks.
-Inspect active local branches first and remote branches second. Compare type or
-ticket prefixes, separator style, topic casing, and typical topic length; do
-not call a pattern clear from one incidental branch.
+Inspect active local branch names first. When remote samples are needed,
+enumerate each configured remote separately and remove its
+`refs/remotes/<remote>/` namespace, for example with
+`%(refname:lstrip=3)`. Exclude symbolic `<remote>/HEAD` and stale refs; never
+treat a remote name such as `origin` as part of the branch convention.
+Compare type or ticket prefixes, separator style, topic casing, and typical
+topic length; do not call a pattern clear from one incidental branch.
 
 Use this naming precedence:
 
@@ -37,6 +41,10 @@ only when the user supplies one or the repository clearly requires it. If the
 name and base are both clear, announce the inferred name and continue under the
 existing branch-creation authorization. Pause for ambiguity, collision, an
 unexpected base, or a request to rename an existing branch.
+
+Use create-only semantics for ordinary branch creation. Never force-create,
+reset an existing branch, or create an orphan branch unless the user explicitly
+requests that exact behavior.
 
 ## Named synchronization prerequisites
 

@@ -184,6 +184,39 @@
         "Keeps subject and body lowercase except proper names, acronyms, and identifiers",
         "Keeps body lines within 72 characters"
       ]
+    },
+    {
+      "id": "E18",
+      "prompt": "Use git-fatality. Create a branch for this fix, commit it, and push. Local branches provide no useful convention; remote refs include origin/HEAD, origin/fix/session-timeout, and origin/fix/login-loop.",
+      "expected_output": "Infer a fix/* branch from normalized remote branch names, then execute the authorized branch, commit, and push stages.",
+      "assertions": [
+        "Removes the remote namespace before comparing branch names",
+        "Excludes the symbolic origin/HEAD ref from convention detection",
+        "Does not treat origin as a repository branch prefix",
+        "Does not require a second approval only because the name was inferred"
+      ]
+    },
+    {
+      "id": "E19",
+      "prompt": "Use git-fatality to commit these changes, push, and create a PR. The current branch fix/session-refresh is suitable and I did not request a new branch.",
+      "expected_output": "Keep the current suitable branch and execute only commit, push, and PR creation.",
+      "assertions": [
+        "Does not create or rename a branch",
+        "Uses fix/session-refresh as the PR head",
+        "Executes no action outside commit, push, and PR creation",
+        "Verifies the resulting branch, upstream, and PR state"
+      ]
+    },
+    {
+      "id": "E20",
+      "prompt": "Use git-fatality to create a new branch for the staged documentation changes and stop there. The repository has no clear branch convention.",
+      "expected_output": "Infer and create a docs/<topic> branch under the existing authorization, then stop.",
+      "assertions": [
+        "Uses a short lowercase hyphen-separated docs/* fallback",
+        "Does not invent a ticket identifier",
+        "Does not ask for a redundant second approval",
+        "Does not commit, push, or create a pull request"
+      ]
     }
   ]
 }

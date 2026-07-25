@@ -165,5 +165,11 @@
     "id": "T32",
     "query": "Do not commit, push, or open a PR; only resolve the conflict",
     "should_trigger": false
+  },
+  {
+    "id": "T33",
+    "query": "$git-fatality create a new documentation branch for the staged work and stop there",
+    "should_trigger": true,
+    "note": "explicit invocation activates a branch-only request"
   }
 ]
