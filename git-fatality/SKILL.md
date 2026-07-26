@@ -1,218 +1,142 @@
 ---
 name: git-fatality
 description: >-
-  Use this skill whenever the user explicitly invokes git-fatality, and
-  otherwise when they ask to draft commit or pull request text, stage and
-  commit an agreed scope, push or publish a branch, create or update a pull
-  request, or finalize or ship branch work through a covered commit, push, or
-  PR action. Support combined flows, including creating a branch before
-  commit, push, and PR creation. Do not invoke it implicitly for status or
-  diff review, fetch or pull, merge, rebase, cherry-pick, conflict resolution,
-  stash, branch management, or general synchronization unless the same
-  request also includes a covered finalization action; in mixed requests,
-  apply it only to the finalization segment.
+  Finalizes Git work through commit, push, branch, and pull request actions.
+  Use when the user explicitly invokes git-fatality or asks to draft commit or
+  PR text, commit an agreed scope, push or publish a branch, create or update a
+  pull request, or otherwise ship work through one of those actions. Do not
+  invoke it implicitly for status or diff review, fetch, pull, merge, rebase,
+  cherry-pick, conflict resolution, stash, or branch management unless the same
+  request includes a covered finalization action.
 ---
 
 # Git Fatality
 
-Finalize exactly the Git work the user requests. Keep the workflow portable
-across Codex, Claude Code, and other Agent Skills clients; never depend on
-client-specific permission metadata for safety.
+Execute exactly the Git finalization the user requests. Keep the workflow
+portable across Codex, Claude Code, and other Agent Skills clients.
 
-## Operating contract
+## Authorization
 
-- Treat explicit invocation in either client as intentional activation.
-- Treat an explicit command such as "commit and push" as authorization for
-  exactly those actions after inspection and scope verification. Do not ask
-  for the same approval a second time.
-- Treat "create a branch, commit, push, and create a PR" as authorization for
-  that complete sequence, including choosing a branch name when one can be
-  inferred safely.
-- Pause before acting only when the user asks for a preview first, the scope or
-  destination is materially ambiguous, repository state changes after the
-  proposal, or execution would require an action the user did not authorize.
-- If the user invokes the skill without naming actions, inspect, propose the
-  action set and text artifacts, and wait for approval.
-- Never widen the request. Commit plus push does not imply PR creation; push
-  only does not imply staging or committing; PR text only does not imply PR
-  creation.
-- Apply "yes" or "do it" to the most recently proposed action set. Compliments,
-  silence, reactions, harness auto-approval, and allow-all modes are not user
-  authorization.
-- Bind authorization to both the action set and the inspected state. Re-scope
-  if either changes materially.
+- An explicit imperative such as "commit and push" authorizes exactly those
+  actions after scope and destination inspection. Do not ask again.
+- Never widen the action set. Commit plus push does not imply a PR; push-only
+  does not imply staging or committing.
+- If invocation names no actions, inspect, propose the action set and text, and
+  wait. Preview-first wording also requires a stop before mutation.
+- Apply "yes" or "do it" only to the latest concrete proposal. Praise, silence,
+  reactions, harness approval, or allow-all modes are not authorization.
 
-If explicit invocation includes a named prerequisite such as fetch, pull,
-merge, rebase, cherry-pick, conflict resolution, or branch creation, perform
-that named stage without inferring additional Git operations. These operations
-do not trigger this skill implicitly on their own.
+## Routine finalization
 
-## Compose the requested stages
+Use this path only when the requested actions, scope, branch, and destination
+are clear and there is no preview, detached `HEAD`, in-progress Git operation,
+secret hazard, rewrite/force action, or recovery. Otherwise use the complex
+guidance below.
 
-Select only the stages the user requested:
+A routine commit-only, push-only, or commit-and-push request is one compact
+operation. Do not create or update a formal plan, todo list, or progress
+checklist. Give at most one short progress sentence, then act or report a real
+blocker.
 
-1. create or switch branch
-2. perform explicitly named synchronization prerequisites
-3. choose and stage commit scope
-4. create one or more commits
-5. push or publish the branch
-6. draft, create, or update a pull request
+Inspect current Git state and the exact relevant diff before mutation. Refresh
+the branch, `HEAD`, index/worktree scope, upstream, and outgoing commit range on
+every invocation. Detect merge, rebase, am, cherry-pick, revert, and bisect
+state. Reuse applicable repository instructions, convention mode, remote
+knowledge, and successful validation from the current task.
 
-Do not force the request into one predefined flow. A dirty worktree does not
-block push-only work when the commits being pushed are already clear and the
-push will not touch those files.
+Treat each requested stage independently. Skip a commit with no meaningful
+scope and skip a push with no outgoing commits at push time. If every requested
+stage is a no-op, report that immediately. Never invent an empty commit or issue
+a pointless push.
 
-Read [references/workflow.md](references/workflow.md) before executing any
-state-changing stage. Read
-[references/pull-requests.md](references/pull-requests.md) only when PR text or
-PR mutation is requested. Read
-[references/examples.md](references/examples.md) before drafting any commit or
-PR text; this is mandatory, not conditional on how clear the repository
-conventions look.
+Finalization does not discover or rerun project builds or tests by default.
+Run checks only when the user requests them, applicable repository instructions
+require them, or no still-applicable result exists for a required check. Never
+bypass normal commit hooks.
 
-## Inspect before drafting or acting
+For a commit:
 
-Resolve the script from the skill directory, but run it against the user's
-target repository without changing into the skill directory:
+- stage only the intended files or hunks and preserve unrelated work
+- inspect the complete staged diff and run `git diff --cached --check`
+- immediately before committing, reconfirm branch and `HEAD` and re-inspect the
+  staged scope
+- after committing, inspect the commit and confirm its content matches
 
-```bash
-bash <resolved-skill-dir>/scripts/git-snapshot.sh <target-repo-path>
-```
+For a push, do not touch dirty files. Recheck the branch, selected remote,
+upstream, and exact outgoing commits immediately before publishing, then verify
+the resulting upstream relationship.
 
-Resolve `<resolved-skill-dir>` from this `SKILL.md`; in Claude Code,
-`${CLAUDE_SKILL_DIR}` is the same directory. If `<target-repo-path>` is
-omitted, the script inspects the current repository. The script is read-only.
-If Bash or the bundled script is unavailable, perform the equivalent read-only
-Git inspection manually and preserve the same branch, `HEAD`, and exact staged
-snapshot checks.
+If any authorization-relevant value changes between inspection and mutation,
+stop and re-scope before continuing.
 
-Use its output to establish:
+## Convention mode
 
-- repository root, branch or detached state, `HEAD`, and upstream
-- ahead and behind counts based on current remote-tracking refs
-- merge, rebase, cherry-pick, revert, or bisect state
-- staged, unstaged, and untracked paths
-- a staged snapshot fingerprint bound to `HEAD`
+`personal` is the default and performs no history queries for style. Phrases
+such as "match repo style" or `conventions: repo` select `repo`; "use my style"
+or `conventions: personal` select `personal`. The latest selection persists for
+later invocations in the same task until the user changes it.
 
-The snapshot is a summary, not a substitute for inspection. Also inspect:
+Use this precedence:
 
-- the full staged diff for commits
-- the full branch range and base diff for PRs
-- relevant unstaged and untracked contents when deciding scope
-- repository instructions and established verification commands
-- recent non-merge commits for message conventions
+1. exact formatting or naming requested now
+2. applicable repository instructions and required PR templates
+3. the selected convention source
+4. personal conventions when `repo` evidence is unclear or unavailable
+
+In `repo` mode, inspect only bounded evidence for the requested artifact:
+recent non-merge commits for commit text, active branch names only when naming
+a branch, and recent merged PRs only when PR instructions or templates leave
+style unresolved. Never fetch solely to discover style. Push-only and no-op
+flows perform no convention lookup.
+
+### Personal commit style
+
+- Use a lowercase imperative subject with no automatic Conventional Commit
+  prefix. Describe what changed, not how.
+- Target 72 characters or fewer for the subject; move detail into the body.
+  Wrap body lines near 72 when practical, but never split or truncate an
+  indivisible URL, identifier, filename, command, or version.
+- Use a body only for non-obvious rationale, breaking changes, or distinct
+  sub-changes. Use a semicolon only for two tightly related clauses and `- `
+  bullets for distinct points.
+- Use no sentence-ending periods. Keep body prose lowercase too, except proper
+  names, acronyms, identifiers, filenames, and versions.
+- Include ticket IDs only when supplied, explicitly requested, or required.
+
+### Personal pull request style
+
+Use the required repository template when present. Otherwise use the commit
+subject style for the title and `## Summary` with concise bullets. Do not add a
+test-plan section unless requested or required. Generated titles and body
+bullets follow the personal commit casing and punctuation rules. Read
+[references/pull-requests.md](references/pull-requests.md) for any PR drafting
+or mutation.
+
+### Personal branch style
+
+- `feature/<topic>` for a new capability or meaningful behavior
+- `fix/<topic>` for a defect, regression, or incorrect behavior
+- `chore/<topic>` for dependencies, tooling, CI, configuration, documentation,
+  tests, or behavior-preserving refactors
+
+Use a meaningful lowercase kebab-case topic of roughly two to six words. Do not
+invent ticket IDs. An exact valid branch name supplied by the user wins.
+
+## Complex flows and safety
+
+Read [references/complex-flows.md](references/complex-flows.md) only for branch
+creation, named synchronization, multiple commits, ambiguous scope,
+preview/pause state binding, failures, recovery, rewrite/force operations, or
+other materially complex finalization.
+
+Never invent a commit without meaningful scope; stage a suspected secret;
+use `--no-verify` or `--no-gpg-sign`; disable signing; rewrite published
+history; force-push; discard work; or delete branches unless the user explicitly
+requests the exact risky action after the risk is known. Preserve verified state
+on failure. A non-fast-forward push never authorizes an automatic pull, merge,
+rebase, or force-push.
 
 Do not print secret values. Treat `.env*`, credentials, keys, tokens, signing
-material, and unexpectedly large or generated artifacts as scope hazards.
-
-## Draft and execute
-
-Before a commit, identify the exact file or hunk scope and draft every commit
-message. Before a PR mutation, draft the title and body. For an already
-authorized end-to-end request, share the plan concisely and continue; do not
-stop merely to repeat the approval gate.
-
-Prefer explicit file paths when staging. Use `git add -A` only when the user
-clearly requested all changes and inspection found no scope hazards. Preserve
-unrelated staged, unstaged, and untracked work.
-
-If the diff contains independent changes, propose or create multiple atomic
-commits when the user requests multiple commits or when one message would hide
-meaningful scope boundaries. Never force unrelated work into one commit.
-
-Immediately before each commit:
-
-1. run the repository's proportionate verification unless the user explicitly
-   scoped it out
-2. run `git diff --cached --check`
-3. rerun the bundled `git-snapshot.sh`
-4. confirm `branch`, `HEAD`, and `staged_snapshot` still match the approved
-   proposal
-
-If they do not match, stop and re-scope. After each commit, push, and PR
-mutation, verify the resulting state from Git or GitHub rather than assuming
-the command succeeded completely.
-
-Immediately before pushing, recheck the branch, remote, upstream, and exact
-commits to publish. Immediately before PR creation or update, recheck the head,
-base, pushed state, and whether a matching open PR now exists.
-
-## Safety boundaries
-
-- Do not invent a commit when no meaningful commit scope exists.
-- Do not stage a suspected secret without explicit confirmation.
-- Do not bypass hooks with `--no-verify`, disable signing, rewrite published
-  history, force-push, discard work, or delete branches unless the user
-  explicitly requests that exact action after the risk is known.
-- If a hook, signer, authentication provider, network, push, or PR command
-  fails, preserve the verified scope, report the exact blocker, and continue
-  only with safe actions already authorized.
-- If a push is rejected as non-fast-forward, do not pull, rebase, merge, or
-  force-push automatically. Inspect and request or use existing authorization
-  for the specific recovery action.
-
-## Text policy
-
-Apply this precedence:
-
-1. explicit user instructions
-2. repository instructions and PR templates
-3. a clear convention in recent history or merged PRs
-4. the user defaults below
-
-Do not claim tests, checks, labels, assignees, pushes, or PR state that were not
-verified.
-
-### Commit message policy
-
-Precedence:
-
-1. **Match the detected convention.** If `git log -20` shows a clear pattern
-   (≥60%), match it: prefix style (`feat:`, `fix(scope):`, gitmoji, ticket ID),
-   casing, subject length habit, body frequency. Don't second-guess a
-   consistent repo.
-2. **Otherwise, user default:**
-   - Subject is lowercase. One thought when possible; use `;` to join logically
-     related changes that can't be expressed as one (e.g. `fix login redirect;
-     update session expiry default`).
-   - Body only when: the "why" is non-obvious, there's a breaking change, or
-     multiple sub-changes need itemization.
-   - Commit bodies are not regular sentence prose.
-   - Use a compact semicolon-separated body only for two tightly related
-     clauses.
-   - Use `- ` bullets for distinct points, preservation lists, future-work
-     notes, or anything that would otherwise become paragraph prose.
-   - **Lowercase applies to subject AND body.** Exceptions only for proper
-     names, acronyms, identifiers, and version/release tokens: `Node.js`,
-     `LTS`, `PostgreSQL`, `useMemo`, `settings.json`, `JWT`, `UUID`.
-   - **No sentence-ending periods anywhere — subject, bullets, or compact
-     body.**
-   - Lowercase-after-period reads broken; don't produce it. If you need
-     punctuation between thoughts, use `;` or switch to bullets.
-   - Imperative mood ("add", "fix", "refactor"). Describe what changed, not
-     how. Lines ≤72 characters. Reference ticket/issue IDs when available.
-
-See [references/examples.md](references/examples.md) for detection cues and
-good/bad samples.
-
-### Pull request policy
-
-Precedence:
-
-1. **Fill the `.github` template if one exists.** Check both
-   `.github/PULL_REQUEST_TEMPLATE.md` (single-file form) and
-   `.github/PULL_REQUEST_TEMPLATE/*.md` (directory form — a repo may ship
-   multiple templates per work type). Use the matching template verbatim as the
-   skeleton. Fill its sections; do not invent extra ones, do not remove
-   sections the template includes.
-2. **Mirror recent merged PRs.** If `gh pr list --state merged` shows a
-   consistent style (e.g. everyone uses `## What`/`## Why`, or no headings at
-   all), match it. If a recent merged PR covers similar work, mirror its
-   structure.
-3. **Otherwise, user default:**
-   - Title: same style as commit subject.
-   - `## Summary` with bullet points.
-   - **No `## Test plan` unless the user explicitly asked for one in this
-     conversation.**
-
-Title and body follow the same casing rules as commit messages.
+material, and unexpectedly large or generated artifacts as scope hazards;
+inspect them without exposing sensitive contents and require confirmation
+before staging a suspected secret.

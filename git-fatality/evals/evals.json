@@ -4,11 +4,13 @@
     {
       "id": "E01",
       "prompt": "Use git-fatality. Commit the staged changes and push to the current branch.",
-      "expected_output": "Inspect and verify the staged scope, draft the commit message, commit, and push without asking for a redundant second approval.",
+      "expected_output": "Inspect, commit, and push as one compact operation without a formal plan or redundant approval.",
       "assertions": [
         "Executes exactly commit and push when state and destination are clear",
         "Does not create or propose a pull request",
-        "Rechecks HEAD and staged_snapshot before committing",
+        "Creates no formal plan, todo list, or numbered progress sequence",
+        "Emits at most one short progress update before Git inspection",
+        "Rechecks branch, HEAD, and the complete staged scope before committing",
         "Verifies the commit and upstream state after execution"
       ]
     },
@@ -19,15 +21,16 @@
       "assertions": [
         "Does not commit or push in the first response",
         "Shows the proposed commit message and destination",
+        "Records the branch, HEAD, staged-diff fingerprint, and destination for drift detection",
         "Treats later yes or do it as approval for only the proposed set"
       ]
     },
     {
       "id": "E03",
-      "prompt": "Use git-fatality. Create a new branch for these changes, commit them, push it, and create a PR. No branch name is provided, but the repository has a clear fix/* convention.",
-      "expected_output": "Infer and announce a valid fix/* branch name, then execute the authorized branch, commit, push, and PR stages when the base and scope are clear.",
+      "prompt": "Use git-fatality. Create a new branch for this bug fix, commit the changes, push it, and create a PR.",
+      "expected_output": "Use the personal fix/<topic> policy, then execute the authorized branch, commit, push, and PR stages when the base and scope are clear.",
       "assertions": [
-        "Uses the repository branch convention and a scope-derived topic",
+        "Uses a short lowercase kebab-case fix/<topic> branch without scanning branch history",
         "Does not require a second approval only because the name was inferred",
         "Pauses instead of overwriting a colliding branch",
         "Creates no actions outside branch, commit, push, and PR"
@@ -62,16 +65,16 @@
       "assertions": [
         "Inspects the full diff rather than only diff stats",
         "Does not hide unrelated changes in one commit",
-        "Re-snapshots after each commit",
+        "Re-inspects branch, HEAD, and index scope before each commit",
         "Summarizes every committed group accurately"
       ]
     },
     {
       "id": "E07",
       "prompt": "A commit message was drafted, but a staged file changed afterward without changing the diff stat. Continue using git-fatality.",
-      "expected_output": "Detect the staged content fingerprint change, invalidate the stale proposal, and stop before committing.",
+      "expected_output": "Detect the changed staged-diff fingerprint, invalidate the stale proposal, and stop before committing.",
       "assertions": [
-        "Compares staged_snapshot rather than only file names or diff stats",
+        "Compares a read-only hash of the raw staged diff rather than only file names or diff stats",
         "Does not commit the changed index under stale authorization",
         "Re-inspects and drafts an updated message"
       ]
@@ -116,7 +119,7 @@
       "assertions": [
         "Does not use --no-gpg-sign or disable commit signing",
         "Does not push or create a PR after the failed commit",
-        "Preserves and reports the staged snapshot",
+        "Preserves and reports the staged scope",
         "Does not claim the commit succeeded"
       ]
     },
@@ -145,9 +148,9 @@
     {
       "id": "E14",
       "prompt": "A git-fatality commit was approved on branch fix/session at HEAD abc123, but the repository was switched to another branch pointing at the same HEAD before commit time.",
-      "expected_output": "Detect the branch change, invalidate the stale authorization, and stop before committing even though HEAD and the staged snapshot are unchanged.",
+      "expected_output": "Detect the branch change, invalidate the stale authorization, and stop before committing even though HEAD and the staged diff are unchanged.",
       "assertions": [
-        "Binds authorization to branch as well as HEAD and staged_snapshot",
+        "Binds authorization to branch as well as HEAD and the staged-diff fingerprint",
         "Does not commit on the newly selected branch",
         "Reports the state drift and re-scopes before continuing"
       ]
@@ -175,19 +178,19 @@
     },
     {
       "id": "E17",
-      "prompt": "Use git-fatality. Commit these changes; the work needs a body explaining several distinct points, and the repository has no dominant message convention.",
+      "prompt": "Use git-fatality. Commit these changes using my conventions; the work needs a body explaining several distinct points.",
       "expected_output": "Draft a commit message using the user default style: lowercase subject and body, `- ` bullets for the distinct points, and no sentence-ending periods anywhere.",
       "assertions": [
-        "Reads references/examples.md before drafting the message",
+        "Does not inspect commit history for style",
         "Uses `- ` bullets for distinct points rather than paragraph prose",
         "Writes no sentence-ending periods in the subject, bullets, or compact body",
         "Keeps subject and body lowercase except proper names, acronyms, and identifiers",
-        "Keeps body lines within 72 characters"
+        "Targets 72-character lines without splitting indivisible tokens"
       ]
     },
     {
       "id": "E18",
-      "prompt": "Use git-fatality. Create a branch for this fix, commit it, and push. Local branches provide no useful convention; remote refs include origin/HEAD, origin/fix/session-timeout, and origin/fix/login-loop.",
+      "prompt": "Use git-fatality with conventions: repo. Create a branch for this fix, commit it, and push. Local branches provide no useful convention; remote refs include origin/HEAD, origin/fix/session-timeout, and origin/fix/login-loop.",
       "expected_output": "Infer a fix/* branch from normalized remote branch names, then execute the authorized branch, commit, and push stages.",
       "assertions": [
         "Removes the remote namespace before comparing branch names",
@@ -210,12 +213,168 @@
     {
       "id": "E20",
       "prompt": "Use git-fatality to create a new branch for the staged documentation changes and stop there. The repository has no clear branch convention.",
-      "expected_output": "Infer and create a docs/<topic> branch under the existing authorization, then stop.",
+      "expected_output": "Infer and create a chore/<topic> branch using the personal branch policy, then stop.",
       "assertions": [
-        "Uses a short lowercase hyphen-separated docs/* fallback",
+        "Uses a short lowercase kebab-case chore/* branch",
+        "Does not inspect branch history for style",
         "Does not invent a ticket identifier",
         "Does not ask for a redundant second approval",
         "Does not commit, push, or create a pull request"
+      ]
+    },
+    {
+      "id": "E21",
+      "prompt": "Use git-fatality to commit and push three small fixes one after another in this same task as I make each new diff available.",
+      "expected_output": "Handle every invocation as a compact routine operation, reuse stable task knowledge, and refresh mutable Git state each time.",
+      "assertions": [
+        "Creates no formal plan or todo list on any invocation",
+        "Uses personal conventions without history queries",
+        "Does not request redundant approval",
+        "Refreshes branch, HEAD, index/worktree scope, upstream, and outgoing range for each invocation",
+        "Reuses still-applicable repository instructions and validation"
+      ]
+    },
+    {
+      "id": "E22",
+      "prompt": "Use git-fatality to commit these changes. Recent history strongly uses Conventional Commits, but I did not request repo conventions.",
+      "expected_output": "Use the personal commit style without inspecting history or adding an automatic Conventional Commit prefix.",
+      "assertions": [
+        "Performs no git log or other history query for style",
+        "Uses a lowercase imperative subject",
+        "Adds no automatic feat: or fix: prefix",
+        "Still honors applicable written repository instructions"
+      ]
+    },
+    {
+      "id": "E23",
+      "prompt": "Use git-fatality with conventions: repo to commit these changes. Recent non-merge commits have no dominant style.",
+      "expected_output": "Perform a bounded commit-history probe, find it inconclusive, and fall back to the personal commit style.",
+      "assertions": [
+        "Inspects only bounded commit evidence relevant to the message",
+        "Does not inspect branch or PR history",
+        "Falls back without blocking",
+        "Does not fetch solely for convention discovery"
+      ]
+    },
+    {
+      "id": "E24",
+      "prompt": "Use git-fatality to create a PR in personal mode. A required PR template exists and merged PRs use another structure.",
+      "expected_output": "Use the required template and avoid querying merged PR history for style.",
+      "assertions": [
+        "Preserves the required template structure",
+        "Does not inspect merged PRs",
+        "Self-assigns with @me unless another assignee or opt-out is specified",
+        "Adds only existing clearly matching labels"
+      ]
+    },
+    {
+      "id": "E25",
+      "prompt": "For this task use repo conventions. Commit the first change, then commit a second change. Before a third commit I say use my style.",
+      "expected_output": "Persist repo mode for the first two invocations, then switch to personal mode for the third.",
+      "assertions": [
+        "The latest explicit convention selection wins",
+        "Repo mode persists within the task until changed",
+        "The third invocation performs no style-history query",
+        "Mutable Git state is refreshed for all three commits"
+      ]
+    },
+    {
+      "id": "E26",
+      "prompt": "Use git-fatality to commit and push, but there are no meaningful changes and no outgoing commits.",
+      "expected_output": "Exit quickly without inventing a commit, push, or formal plan.",
+      "assertions": [
+        "Creates no plan or todo list",
+        "Creates no empty or fabricated commit",
+        "Performs no convention lookup",
+        "Does not issue a pointless push"
+      ]
+    },
+    {
+      "id": "E27",
+      "prompt": "Use git-fatality to split an ambiguous mixed diff into several commits, recover from a non-fast-forward push, and update the existing PR.",
+      "expected_output": "Load the relevant complex and PR guidance, use a formal plan only if it materially clarifies the authorized work, and do not infer a recovery strategy.",
+      "assertions": [
+        "Does not force the routine fast path onto complex work",
+        "Does not treat complexity as automatic recovery authorization",
+        "A formal plan is optional rather than mandatory",
+        "Preserves unrelated work and existing PR state"
+      ]
+    },
+    {
+      "id": "E28",
+      "prompt": "Use git-fatality to create a branch for a new offline reading capability. Use my style.",
+      "expected_output": "Create a concise feature/<topic> branch under the personal naming policy.",
+      "assertions": [
+        "Uses feature/ with a meaningful lowercase kebab-case topic",
+        "Targets roughly two to six topic words",
+        "Does not inspect branch history",
+        "Does not invent a ticket ID"
+      ]
+    },
+    {
+      "id": "E29",
+      "prompt": "Use git-fatality with conventions: repo to create a branch for dependency maintenance. Teammate branches have no consistent convention.",
+      "expected_output": "Inspect bounded branch evidence, find it inconclusive, and fall back to chore/<topic>.",
+      "assertions": [
+        "Inspects branch conventions only because branch naming was requested",
+        "Normalizes remote namespaces and ignores symbolic remote HEAD",
+        "Falls back to the personal chore/ policy",
+        "Does not block on inconsistent history"
+      ]
+    },
+    {
+      "id": "E30",
+      "prompt": "Use git-fatality to create the branch fix/PROJ-42-session-timeout exactly, then commit and push.",
+      "expected_output": "Use the complete valid branch name exactly as supplied and execute only branch creation, commit, and push.",
+      "assertions": [
+        "Does not rewrite the supplied prefix, ticket, casing, or topic",
+        "Does not scan branch history",
+        "Pauses only for invalidity, collision, or unsafe base",
+        "Does not create a pull request"
+      ]
+    },
+    {
+      "id": "E31",
+      "prompt": "Use git-fatality to commit and push, but the repository is currently in a detached HEAD state during an interactive rebase.",
+      "expected_output": "Reject the routine fast path, report the detached and in-progress state, and avoid an unrelated commit or push.",
+      "assertions": [
+        "Detects detached HEAD and the active rebase",
+        "Does not create a routine plan or todo list",
+        "Does not commit, push, or select a recovery action",
+        "Continues only after authorization for the exact rebase operation"
+      ]
+    },
+    {
+      "id": "E32",
+      "prompt": "Use git-fatality to commit all changes, including a modified .env.production file and an unexpectedly large generated artifact.",
+      "expected_output": "Treat both paths as hazards, avoid exposing secret values, and require confirmation before staging suspected sensitive content.",
+      "assertions": [
+        "Does not print .env values, credentials, keys, tokens, or signing material",
+        "Does not stage a suspected secret without confirmation",
+        "Flags the unexpectedly large generated artifact",
+        "Preserves the remaining inspected scope"
+      ]
+    },
+    {
+      "id": "E33",
+      "prompt": "Use git-fatality to commit and push. There is no meaningful commit scope, but the current branch has one verified outgoing commit.",
+      "expected_output": "Skip only the no-op commit stage and publish the exact existing outgoing commit.",
+      "assertions": [
+        "Creates no empty or fabricated commit",
+        "Performs no commit-style lookup",
+        "Pushes only the verified outgoing commit",
+        "Creates no formal plan or todo list"
+      ]
+    },
+    {
+      "id": "E34",
+      "prompt": "Use git-fatality to commit and push directly. After inspection but before the commit, the branch and staged scope change.",
+      "expected_output": "Detect the authorization-relevant drift, stop before mutation, and re-scope instead of executing against stale state.",
+      "assertions": [
+        "Rechecks the branch, HEAD, and complete staged scope immediately before committing",
+        "Does not commit or push after the mismatch",
+        "Reports the changed state without exposing secret values",
+        "Continues only after the new scope and destination are clear"
       ]
     }
   ]

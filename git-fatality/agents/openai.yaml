@@ -1,7 +1,7 @@
 interface:
   display_name: "Git Fatality"
-  short_description: "Finalize branches through commit, push, and PR"
+  short_description: "Finalize Git work quickly and safely"
   brand_color: "#E11D48"
-  default_prompt: "Use $git-fatality to inspect the current Git state, execute only the branch, commit, push, and PR actions I request, and verify the result."
+  default_prompt: "Use $git-fatality to execute only the Git finalization I request, use my personal conventions by default, skip formal planning for routine work, and verify the result."
 policy:
   allow_implicit_invocation: true

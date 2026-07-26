@@ -2,83 +2,74 @@
 
 Read this reference only when drafting, creating, or updating a pull request.
 
-## Interpret PR intent
+## Interpret intent
 
-- "Write" or "draft PR text" means title and body only.
-- "Create" or "open a PR" means a ready PR unless the user says draft.
-- "Create/open a draft PR" means use the hosting platform's draft state.
-- Never interpret the word "draft" in "draft the PR text" as authorization to
-  create a remote draft PR.
+- "Draft" or "write PR text" means title and body only.
+- "Create" or "open a PR" means a ready PR unless the user says remote draft.
+- "Create a draft PR" means use the hosting platform's draft state.
+- PR creation does not authorize committing, pushing, or updating an existing
+  PR unless those actions were also requested.
 
-## Inspect the branch and base
+## Resolve style and content
+
+Use the precedence in `SKILL.md`. Search template names case-insensitively in
+the repository root, `docs/`, and hosting configuration directories such as
+`.github/`. Check `PULL_REQUEST_TEMPLATE.md` and `.txt`, plus `.md` and `.txt`
+work-type templates inside `PULL_REQUEST_TEMPLATE/`. Read templates from the
+default branch when the hosting platform does. Use the selected template
+verbatim as the skeleton, preserve its sections and order, and fill every
+required field.
+
+In `personal` mode, do not query merged PR history for style. Without a required
+template, use the personal title style and `## Summary` with concise,
+diff-grounded bullets. Apply the personal commit casing and punctuation rules
+to generated PR titles and body bullets.
+
+In `repo` mode, still inspect required templates first. Query a bounded sample
+of recent merged PRs only when written instructions and templates leave
+structure or tone unresolved. Fall back to personal style when the sample is
+inconsistent, insufficient, or unavailable.
+
+Do not invent tests, issues, reviewers, deployment notes, breaking changes, or
+user impact. Add a test-plan section only when requested or required.
+
+## Inspect branch and base
 
 Choose the base in this order:
 
 1. the user's explicit base
-2. the current branch's configured GitHub merge base
-3. the repository's default branch from GitHub
-4. the remote `HEAD` symbolic ref when GitHub is unavailable
+2. the head branch's configured hosting merge base
+3. the repository's default branch from the hosting platform
+4. the remote `HEAD` symbolic ref
 
-Inspect the complete `base...HEAD` diff and commit range. Do not summarize only
-the latest commit on a multi-commit branch.
+Inspect the complete `base...HEAD` diff and commit range. Exclude uncommitted
+files from the PR summary.
 
-Before creating anything, check for an open PR with the same head branch. If
-one exists, do not create a duplicate or overwrite it under creation-only
-authorization. Report the existing PR and compare it with the prepared result.
-Update it only when the user explicitly requested an update, or after they
-approve the proposed changes to the existing PR.
-
-## Find repository templates
-
-Read templates from the repository's default branch, where GitHub sources them.
-Check case-insensitively for supported `.md` or `.txt` files in:
-
-- the repository root
-- `docs/`
-- `.github/`
-- `PULL_REQUEST_TEMPLATE/` below any of those locations
-
-For multiple templates, use the user's choice or the template matching the work
-type. Use the chosen template verbatim as the skeleton: fill its sections,
-preserve required sections, and do not invent new ones unless requested.
-
-If no template exists, inspect recent merged PRs for a consistent structure.
-Otherwise use the fallback in `references/examples.md`.
+Before creation, check for an open PR with the same head. Do not create a
+duplicate or overwrite an existing PR under creation-only authorization.
+Update it only when explicitly requested or after approval of a concrete update.
 
 ## Assignee and labels
 
-Self-assign by default with `@me`. A named assignee replaces that default; an
+Self-assign with `@me` by default. A named assignee replaces that default; an
 explicit opt-out leaves the PR unassigned.
 
-Fetch existing labels with enough result capacity to avoid the CLI's small
-default page, for example:
+Inspect the complete available label set. Apply only existing labels that
+clearly match the work, and never create labels. Explicit labels or an explicit
+label opt-out override inference.
 
-```bash
-gh label list --limit 200 --json name,description
-```
+## Create or update safely
 
-Apply only labels that already exist and clearly match the work. Prefer the
-repository's actual equivalents of feature, bug, documentation, maintenance,
-or dependency work. Never create labels. An explicit label list overrides
-inference; an explicit opt-out applies only to labels.
+Use available hosting tools with explicit base, head, title, body, and draft
+state. Prefer a body file over shell-interpolated multiline text. For GitHub,
+`gh pr create` or `gh pr edit` is suitable when available; pass assignees and
+labels during creation when possible.
 
-Whenever possible, pass assignees and labels directly to `gh pr create` with
-`--assignee` and `--label`. Use `gh pr edit` for an existing PR or as a fallback
-when creation succeeded but metadata application did not.
+If no authenticated hosting tool is available, finish the requested text and
+local verification, then report the blocked remote mutation instead of claiming
+success.
 
-## Create safely
-
-Use explicit `--base`, `--head`, `--title`, and `--body-file` arguments. Prefer
-`--body-file` over shell-interpolated multiline text. Add `--draft` only for a
-remote draft PR request.
-
-After creation or update, verify with authoritative state, including:
-
-```bash
-gh pr view --json number,url,state,isDraft,baseRefName,headRefName,title,body,assignees,labels
-```
-
-Report the URL, ready or draft state, base and head branches, assignee, and
-labels actually present. If metadata application fails after creation, report
-the PR as created and the metadata step as incomplete rather than retrying PR
-creation.
+After creation or update, read authoritative hosting state and verify the URL,
+ready/draft state, base, head, title, body, assignees, and labels. If metadata
+application fails after creation, report the PR as created and the metadata
+step as incomplete rather than retrying creation.

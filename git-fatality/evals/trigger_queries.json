@@ -171,5 +171,23 @@
     "query": "$git-fatality create a new documentation branch for the staged work and stop there",
     "should_trigger": true,
     "note": "explicit invocation activates a branch-only request"
+  },
+  {
+    "id": "T34",
+    "query": "Commit and push these changes using my conventions",
+    "should_trigger": true,
+    "note": "covered finalization with the default personal convention mode"
+  },
+  {
+    "id": "T35",
+    "query": "Match repo style, write the commit message, and commit the staged changes",
+    "should_trigger": true,
+    "note": "covered finalization with explicit repository convention mode"
+  },
+  {
+    "id": "T36",
+    "query": "Compare recent commit and branch naming conventions, but do not commit, push, or create a PR",
+    "should_trigger": false,
+    "note": "convention research alone is outside finalization"
   }
 ]

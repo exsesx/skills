@@ -7,9 +7,9 @@ Skills format and are designed for both Codex and Claude Code.
 ## Skills
 
 - **git-fatality** — Finalize Git work through an exact combination of branch
-  creation, scoped commits, pushes, and pull requests. Direct commands execute
-  after inspection without a redundant approval round; preview-first requests
-  still pause before mutation.
+  creation, scoped commits, pushes, and pull requests. Routine commit and push
+  commands execute after inspection without a redundant approval round or
+  formal task list; preview-first requests still pause before mutation.
 
   ```bash
   npx skills@latest add exsesx/skills --skill git-fatality
@@ -20,6 +20,12 @@ finalization requests. Pull, merge, rebase, conflict-resolution, and branch
 management tasks do not activate it implicitly unless the same request also
 contains a covered finalization action.
 
+Personal commit, pull request, and branch conventions are the default and do
+not require a history scan. Add `conventions: repo` or say `match repo style`
+to use bounded repository evidence instead; unclear evidence falls back to the
+personal conventions. These are plain-language prompt selectors, not a
+configuration-file syntax.
+
 Explicit invocation is always supported:
 
 ```text
@@ -28,6 +34,9 @@ $git-fatality commit and push to this branch
 
 # Claude Code
 /git-fatality create a new branch, commit and push, then create a PR
+
+# Either client, using repository conventions for this task
+$git-fatality conventions: repo; commit and push
 ```
 
 ## Install
@@ -69,8 +78,7 @@ npx skills remove <skill-name>
 │   ├── SKILL.md
 │   ├── agents/
 │   ├── evals/
-│   ├── references/
-│   └── scripts/
+│   └── references/
 └── LICENSE
 ```
 
