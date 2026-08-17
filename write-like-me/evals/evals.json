@@ -158,6 +158,18 @@
         "Uses the casual default",
         "Does not add a translation or explanation"
       ]
+    },
+    {
+      "id": "E15",
+      "prompt": "$write-like-me clean this up but keep the energy: finally fixed it 😅🙌\nthat took forever 😂!",
+      "expected_output": "Improve the wording while preserving the source emoji and punctuation style without escalating it.",
+      "assertions": [
+        "Preserves the three source emojis",
+        "Adds no additional emojis",
+        "Preserves the expressive exclamation mark",
+        "Keeps the two related thoughts in one conversational cluster",
+        "Returns only the rewritten text"
+      ]
     }
   ]
 }
