@@ -1,0 +1,76 @@
+[
+  {
+    "id": "T01",
+    "query": "$write-like-me clean this up but keep it casual",
+    "should_trigger": true,
+    "note": "explicit Codex invocation"
+  },
+  {
+    "id": "T02",
+    "query": "$write-like-me business: make this shorter and clearer",
+    "should_trigger": true,
+    "note": "explicit register selection"
+  },
+  {
+    "id": "T03",
+    "query": "/write-like-me formal: rewrite this paragraph",
+    "should_trigger": true,
+    "note": "explicit Claude Code invocation"
+  },
+  {
+    "id": "T04",
+    "query": "$write-like-me give me a casual and a formal version",
+    "should_trigger": true,
+    "note": "explicit multi-register request"
+  },
+  {
+    "id": "T05",
+    "query": "Make this sound more casual",
+    "should_trigger": false
+  },
+  {
+    "id": "T06",
+    "query": "Rewrite this like me",
+    "should_trigger": false
+  },
+  {
+    "id": "T07",
+    "query": "Write a concise business reply",
+    "should_trigger": false
+  },
+  {
+    "id": "T08",
+    "query": "Use my usual writing style",
+    "should_trigger": false
+  },
+  {
+    "id": "T09",
+    "query": "Fix the grammar without changing my meaning",
+    "should_trigger": false
+  },
+  {
+    "id": "T10",
+    "query": "Give me two tone variants",
+    "should_trigger": false
+  },
+  {
+    "id": "T11",
+    "query": "$grill-me challenge this draft",
+    "should_trigger": false
+  },
+  {
+    "id": "T12",
+    "query": "$humanizer remove AI-sounding wording",
+    "should_trigger": false
+  },
+  {
+    "id": "T13",
+    "query": "Summarize this document",
+    "should_trigger": false
+  },
+  {
+    "id": "T14",
+    "query": "Translate this into English",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,161 @@
+{
+  "skill_name": "write-like-me",
+  "evals": [
+    {
+      "id": "E01",
+      "prompt": "$write-like-me clean this up: hey, quick thing\n\ngot the draft working but the last part is still weird\nany idea?",
+      "expected_output": "Make only useful corrections while retaining casual wording and conversational line rhythm.",
+      "assertions": [
+        "Uses the casual register because none was named",
+        "Preserves the two distinct thought clusters",
+        "Keeps the question mark",
+        "Adds no greeting, sign-off, context, or explanation"
+      ]
+    },
+    {
+      "id": "E02",
+      "prompt": "$write-like-me rewrite this but keep the energy: wait, really?!\nthat actually worked",
+      "expected_output": "Preserve the emphasis and short-line punctuation without manufacturing extra excitement.",
+      "assertions": [
+        "Preserves the question and exclamation marks",
+        "Avoids a final period on the short casual line",
+        "Does not add emojis or praise",
+        "Returns only the rewritten text"
+      ]
+    },
+    {
+      "id": "E03",
+      "prompt": "$write-like-me polished: hey, saw the update\nlooks good mostly, the last bit is kinda confusing though",
+      "expected_output": "Produce a clearer conversational version without turning it into business or formal prose.",
+      "assertions": [
+        "Smooths the confusing fragment and rough transition",
+        "Retains a conversational voice and contractions where natural",
+        "Uses readable punctuation",
+        "Adds no invented context or next step"
+      ]
+    },
+    {
+      "id": "E04",
+      "prompt": "$write-like-me business: tell them the review is complete and ask for confirmation by Thursday",
+      "expected_output": "Write a concise, calm message with the result and requested next step.",
+      "assertions": [
+        "States that the review is complete",
+        "Clearly asks for confirmation by Thursday",
+        "Uses restrained warmth and conventional punctuation",
+        "Avoids hype, filler, corporate abstractions, invented follow-up, and inferred consequences"
+      ]
+    },
+    {
+      "id": "E05",
+      "prompt": "$write-like-me formal: the proposal is fine but we need the signed copy before we can start",
+      "expected_output": "Use complete, precise sentences while preserving the condition on starting.",
+      "assertions": [
+        "Preserves the requirement for a signed copy before work begins",
+        "Does not claim that receiving the copy guarantees work will begin",
+        "Uses complete sentences and standard punctuation",
+        "Uses no slang or casual fragments",
+        "Avoids bureaucratic or inflated language"
+      ]
+    },
+    {
+      "id": "E06",
+      "prompt": "$write-like-me minimally fix: honestly I am not sure this is the right move yet",
+      "expected_output": "Preserve uncertainty and stance while making only necessary corrections.",
+      "assertions": [
+        "Does not turn uncertainty into agreement or rejection",
+        "Does not add reasons, evidence, or advice",
+        "Makes no unnecessary stylistic rewrite",
+        "Returns one result"
+      ]
+    },
+    {
+      "id": "E07",
+      "prompt": "$write-like-me write a confirmation that must include the delivery date. No date was provided, and the date cannot be omitted.",
+      "expected_output": "Ask one concise question for the missing date instead of inventing it.",
+      "assertions": [
+        "Asks no more than one question",
+        "Requests only the missing delivery date",
+        "Does not invent a date",
+        "Does not omit the required date and draft anyway",
+        "Does not produce a misleading ready-to-send confirmation"
+      ]
+    },
+    {
+      "id": "E08",
+      "prompt": "$write-like-me reply that the change works; no recipient name was provided",
+      "expected_output": "Draft the concise reply without blocking on a nonessential recipient name.",
+      "assertions": [
+        "Does not ask for a name",
+        "Does not invent a name or relationship",
+        "Omits an unnecessary greeting",
+        "Uses the casual default"
+      ]
+    },
+    {
+      "id": "E09",
+      "prompt": "$write-like-me business, warmer and shorter: confirm that the request was received and will be reviewed tomorrow",
+      "expected_output": "Apply the local warmth and brevity modifiers without creating a new style or changing facts.",
+      "assertions": [
+        "Confirms receipt and tomorrow's review",
+        "Is warmer and shorter than the ordinary business form",
+        "Remains calm and specific",
+        "Adds no promise beyond review"
+      ]
+    },
+    {
+      "id": "E10",
+      "prompt": "$write-like-me polished: Keep `cacheKey` stable. See [the guide](https://example.invalid/guide). Do not change:\n```ts\nconst cacheKey = id\n```",
+      "expected_output": "Improve surrounding prose while preserving the identifier, link, and code fence exactly.",
+      "assertions": [
+        "Preserves both `cacheKey` occurrences",
+        "Preserves the Markdown link destination",
+        "Preserves the TypeScript code fence and code",
+        "Does not add unsupported technical detail"
+      ]
+    },
+    {
+      "id": "E11",
+      "prompt": "$write-like-me give me two versions of this, casual and formal: the schedule changed and the meeting is now Friday",
+      "expected_output": "Return exactly two meaning-equivalent versions with visibly different requested registers.",
+      "assertions": [
+        "Produces exactly two versions",
+        "Preserves Friday in both versions",
+        "Uses casual rhythm only in the casual version",
+        "Uses complete conventional prose in the formal version"
+      ]
+    },
+    {
+      "id": "E12",
+      "prompt": "$write-like-me rewrite only the first paragraph:\n\nthis part is kinda confusing and needs cleaned up\n\nKeep this paragraph unchanged: \"ship when ready.\"",
+      "expected_output": "Respect the editing boundary and exact quotation instead of normalizing the whole source.",
+      "assertions": [
+        "Changes only the first paragraph",
+        "Leaves the second paragraph byte-for-byte unchanged",
+        "Preserves the quoted phrase exactly",
+        "Does not add commentary"
+      ]
+    },
+    {
+      "id": "E13",
+      "prompt": "$write-like-me use this correspondence for the current reply, but do not retain it: \"Can you send the summary today?\" Reply that it will be sent today.",
+      "expected_output": "Use supplied context only for the current result and persist none of it.",
+      "assertions": [
+        "Does not write source text or personal details into skill files",
+        "Does not claim to remember the correspondence for later tasks",
+        "Does not call memory or external tools",
+        "Completes the requested rewrite from current context"
+      ]
+    },
+    {
+      "id": "E14",
+      "prompt": "$write-like-me popraw to, ale zachowaj język: hej, chyba już działa\nmożesz sprawdzić?",
+      "expected_output": "Preserve the source language and casual rhythm unless translation was requested.",
+      "assertions": [
+        "Keeps the result in Polish",
+        "Preserves the question",
+        "Uses the casual default",
+        "Does not add a translation or explanation"
+      ]
+    }
+  ]
+}

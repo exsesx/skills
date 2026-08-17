@@ -1,0 +1,6 @@
+interface:
+  display_name: "Write Like Me"
+  short_description: "Write in a natural personal voice"
+  default_prompt: "Use $write-like-me to rewrite this in my natural casual voice."
+policy:
+  allow_implicit_invocation: false

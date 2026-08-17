@@ -15,7 +15,15 @@ Skills format and are designed for both Codex and Claude Code.
   npx skills@latest add exsesx/skills --skill git-fatality
   ```
 
-The skill can activate implicitly for commit, push, PR, and explicit Git
+- **write-like-me** — Draft or rewrite text in a natural personal voice using
+  casual, polished, business, or formal registers. It activates only through
+  explicit `$write-like-me` or `/write-like-me` invocation.
+
+  ```bash
+  npx skills@latest add exsesx/skills --skill write-like-me
+  ```
+
+`git-fatality` can activate implicitly for commit, push, PR, and explicit Git
 finalization requests. Pull, merge, rebase, conflict-resolution, and branch
 management tasks do not activate it implicitly unless the same request also
 contains a covered finalization action.
@@ -79,6 +87,10 @@ npx skills remove <skill-name>
 │   ├── agents/
 │   ├── evals/
 │   └── references/
+├── write-like-me/
+│   ├── SKILL.md
+│   ├── agents/
+│   └── evals/
 └── LICENSE
 ```
 
