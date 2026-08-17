@@ -25,12 +25,14 @@
     },
     {
       "id": "E03",
-      "prompt": "$write-like-me polished: hey, saw the update\nlooks good mostly, the last bit is kinda confusing though",
-      "expected_output": "Produce a clearer conversational version without turning it into business or formal prose.",
+      "prompt": "$write-like-me polished: hey, saw the update\nlooks good mostly\n\nthe last bit is kinda confusing though\ncan you clarify?",
+      "expected_output": "Produce a clearer conversational version while retaining the casual message rhythm.",
       "assertions": [
         "Smooths the confusing fragment and rough transition",
         "Retains a conversational voice and contractions where natural",
-        "Uses readable punctuation",
+        "Uses one newline within each related thought cluster",
+        "Preserves the blank line between distinct thought clusters",
+        "Keeps the question mark and avoids forced final periods on short lines",
         "Adds no invented context or next step"
       ]
     },

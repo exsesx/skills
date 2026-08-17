@@ -59,9 +59,9 @@ Use line breaks as punctuation:
 
 ### Polished
 
-Smooth confusing fragments and rough transitions while retaining contractions
-and natural rhythm. Use standard punctuation where it improves readability,
-without making the result corporate or formal.
+Use the casual message-rhythm rules above. Smooth confusing fragments and rough
+transitions while retaining contractions. Use standard punctuation where it
+improves readability, without making the result corporate or formal.
 
 ### Business
 
