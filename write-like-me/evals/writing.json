@@ -1,0 +1,18 @@
+[
+  {
+    "id": "casual",
+    "prompt": "Clean this up in a casual register. Return only the rewritten text:\nfinally got the preview working 😅\nlooks fine on my phone\n\nnot sure about the tablet version yet\ncould you check that one?"
+  },
+  {
+    "id": "polished",
+    "prompt": "Rewrite this in a polished register. Return only the rewritten text:\nI think the first version is doing a bit too much\nmaybe we can leave the export options for later?\n\nwould give us more time to get the editor right"
+  },
+  {
+    "id": "business",
+    "prompt": "Rewrite this in a business register. Return only the rewritten text:\nthanks for the details. the proposed approach works for me, but I need the final estimate before I can approve it. can you send that by Wednesday?"
+  },
+  {
+    "id": "formal",
+    "prompt": "Rewrite this in a formal register. Return only the rewritten text:\nwe agree with the proposed changes but implementation is still subject to written approval. please provide the revised document for review."
+  }
+]

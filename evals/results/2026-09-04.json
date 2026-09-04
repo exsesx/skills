@@ -1,0 +1,125 @@
+{
+  "date": "2026-09-04",
+  "source_sha256": {
+    "git-fatality/SKILL.md": "08ac473513920931d940dccf7f2294ce9fb2ddddadfbf6bcb00b67e4ff77ad33",
+    "git-fatality/references/pull-requests.md": "42f8840767b926f55da255eb6cc650d20e201aed9f1c3ab7feda4b41a543d6fa",
+    "git-fatality/references/complex-flows.md": "6154fcc2fa12b39edddad2afcd30cec8647d5410f803c85fe0e20d0dde9eee0c",
+    "write-like-me/SKILL.md": "82f563d6370ffa4915a0d08336e191e4afb2b7b8a039251cc488d0282cfbec80",
+    "write-like-me/references/examples.md": "d417f5a8843732762698c326926796acf83504efcd2bd8754bfcf57bcd7e53ef",
+    "evals/run.py": "46ca68f1bf8245502679d7d068128d6c6d41c5ddf645a2f5bd3cd317f930d58d",
+    "evals/hosting.py": "5b99ec389c0e7015ffa7af5e982512c31bfbda05fc3f50d67aeec76f84f6af4a",
+    "evals/test_run.py": "3f352983fe7f3baecd89d0325967c2640869c473bca40acfba0158dc5ef7bd2a"
+  },
+  "grader_regressions": {
+    "command": "python3 -m unittest discover -s evals",
+    "passed": 7,
+    "failed": 0
+  },
+  "git_forward_runs": {
+    "executor": "Codex subagents using generated prompts and copied skills",
+    "cases": [
+      {
+        "case": "commit-staged",
+        "checks": {
+          "branch_preserved": true,
+          "worktree_files_preserved": true,
+          "remote_destination_preserved": true,
+          "one_commit": true,
+          "parent_preserved": true,
+          "committed_exact_index": true,
+          "index_clean": true,
+          "remote_unchanged": true
+        },
+        "state_checks_passed": true
+      },
+      {
+        "case": "pr-publish",
+        "checks": {
+          "branch_preserved": true,
+          "worktree_files_preserved": true,
+          "remote_destination_preserved": true,
+          "no_new_commit": true,
+          "exact_head_published": true,
+          "other_remote_refs_preserved": true,
+          "upstream_correct": true,
+          "index_preserved": true,
+          "pr_created": true,
+          "pr_head_matches": true,
+          "pr_head_branch_correct": true,
+          "pr_head_repository_correct": true,
+          "pr_base_correct": true,
+          "pr_ready": true,
+          "pr_text_present": true,
+          "pr_assignee_correct": true,
+          "pr_labels_correct": true
+        },
+        "state_checks_passed": true
+      },
+      {
+        "case": "publish",
+        "checks": {
+          "branch_preserved": true,
+          "worktree_files_preserved": true,
+          "remote_destination_preserved": true,
+          "no_new_commit": true,
+          "exact_head_published": true,
+          "other_remote_refs_preserved": true,
+          "upstream_correct": true,
+          "index_preserved": true
+        },
+        "state_checks_passed": true
+      },
+      {
+        "case": "push-dirty",
+        "checks": {
+          "branch_preserved": true,
+          "worktree_files_preserved": true,
+          "remote_destination_preserved": true,
+          "no_new_commit": true,
+          "exact_head_published": true,
+          "other_remote_refs_preserved": true,
+          "upstream_correct": true,
+          "index_preserved": true
+        },
+        "state_checks_passed": true
+      }
+    ]
+  },
+  "pr_description_review": "Published feature change described; unrelated advancement of main and dirty files excluded",
+  "codex_cli_smoke": {
+    "case": "publish",
+    "execution_returncode": 0,
+    "state_checks_passed": true
+  },
+  "claude_cli_smoke": {
+    "case_file": "write-like-me/evals/writing.json",
+    "case": "business",
+    "mode": "safe mode, tools disabled, supplied instructions",
+    "outputs": {
+      "baseline": "Thank you for the additional information. The proposed approach is acceptable; however, I will require the final estimate before I can grant approval. Could you please provide it by Wednesday?",
+      "skill": "Thanks for the details. The proposed approach works for me, but I need the final estimate before I can approve it. Could you send that by Wednesday?"
+    }
+  },
+  "human_calibration": {
+    "casual": "Preferred the skill output and its line breaks",
+    "polished": "Preferred the skill output and its conversational rhythm",
+    "business": "Slight preference for could you over can you; near tie",
+    "formal": "Tie between remains subject to approval and is still subject to approval"
+  },
+  "static_checks": [
+    "Python syntax",
+    "JSON parsing and unique case IDs",
+    "Ruby YAML parsing and invocation metadata",
+    "local Markdown links",
+    "git diff --check"
+  ],
+  "limits": [
+    "Small forward checks, not statistical reliability measurements",
+    "Git state checks do not establish every inspection step; PR text was also reviewed manually",
+    "PR creation used a local simulator, not GitHub",
+    "Native client trigger and conversation scenarios remain manual review specifications",
+    "The writing CLI comparison tests supplied instructions rather than native skill loading",
+    "CLI startup required normal local app-server and login access outside the parent execution sandbox; child evaluation permissions were retained",
+    "Bundled quick_validate.py could not run because PyYAML was unavailable; separate YAML and metadata checks passed"
+  ]
+}

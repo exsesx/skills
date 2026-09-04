@@ -112,8 +112,8 @@
   {
     "id": "T22",
     "query": "Write the merge commit message for this conflict resolution",
-    "should_trigger": false,
-    "note": "merge context outweighs the generic commit-message keyword"
+    "should_trigger": true,
+    "note": "commit-message drafting is covered; this does not authorize continuing the merge"
   },
   {
     "id": "T23",

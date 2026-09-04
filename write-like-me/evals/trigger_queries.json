@@ -72,5 +72,17 @@
     "id": "T14",
     "query": "Translate this into English",
     "should_trigger": false
+  },
+  {
+    "id": "T15",
+    "query": "Explain what the literal command `$write-like-me` means. Do not rewrite any text.",
+    "should_trigger": false,
+    "note": "a quoted command being discussed is not an invocation"
+  },
+  {
+    "id": "T16",
+    "query": "Improve the write-like-me skill instructions in this repository.",
+    "should_trigger": false,
+    "note": "editing the skill package is not applying its voice to the response"
   }
 ]

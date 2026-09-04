@@ -76,17 +76,26 @@ language plain and specific rather than promotional or corporate. State only
 the requested next step; add no offer, ownership, follow-up, commitment,
 generic closing, or inferred consequence.
 
+For an ordinary request, "Could you ...?" is a useful default when a little
+softness fits. "Can you ...?" is equally valid when preserving the source or a
+more direct tone; do not mechanically replace it.
+
 ### Formal
 
 Use complete sentences, standard grammar and punctuation, precise wording, and
 a restrained tone. Remove casual fragments and slang while keeping the result
 plain, direct, and free of inflated or bureaucratic language.
 
+For concrete examples of the registers, read
+[references/examples.md](references/examples.md) when the requested tone is
+unclear. Examples illustrate acceptable outputs, not exact wording to copy.
+
 ## Speed and privacy
 
 Complete ordinary writing tasks from the invoking request and current
-conversation. Use no tools, browsing, app inspection, memory lookup, or other
-skills unless the user explicitly requests work on an external artifact.
+conversation. Apart from reading the optional register examples, use no tools,
+browsing, app inspection, memory lookup, or other skills unless the user
+explicitly requests work on an external artifact.
 
 Treat this package as public. Keep request data in the current response and
 store no source text, names, contacts, personal facts, correspondence, or

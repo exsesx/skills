@@ -20,7 +20,9 @@ portable across Codex, Claude Code, and other Agent Skills clients.
 - An explicit imperative such as "commit and push" authorizes exactly those
   actions after scope and destination inspection. Do not ask again.
 - Never widen the action set. Commit plus push does not imply a PR; push-only
-  does not imply staging or committing.
+  does not imply staging or committing. Creating a PR includes publishing the
+  inspected, already committed scope needed for that PR; it does not include
+  making a new commit. Explicit restrictions such as "do not push" win.
 - If invocation names no actions, inspect, propose the action set and text, and
   wait. Preview-first wording also requires a stop before mutation.
 - Apply "yes" or "do it" only to the latest concrete proposal. Praise, silence,
@@ -45,9 +47,10 @@ state. Reuse applicable repository instructions, convention mode, remote
 knowledge, and successful validation from the current task.
 
 Treat each requested stage independently. Skip a commit with no meaningful
-scope and skip a push with no outgoing commits at push time. If every requested
-stage is a no-op, report that immediately. Never invent an empty commit or issue
-a pointless push.
+scope. A push is complete only when the intended remote branch exists at the
+intended commit and any requested upstream setup is satisfied. A new branch
+can need publishing even when its commits already exist on another remote
+branch. If every requested stage is complete, report that immediately.
 
 Finalization does not discover or rerun project builds or tests by default.
 Run checks only when the user requests them, applicable repository instructions
@@ -63,8 +66,10 @@ For a commit:
 - after committing, inspect the commit and confirm its content matches
 
 For a push, do not touch dirty files. Recheck the branch, selected remote,
-upstream, and exact outgoing commits immediately before publishing, then verify
-the resulting upstream relationship.
+destination ref, and exact outgoing commits immediately before publishing.
+Check the actual remote ref rather than relying only on cached tracking refs
+or ahead counts. After publishing, verify that remote ref's commit and the
+intended upstream relationship.
 
 If any authorization-relevant value changes between inspection and mutation,
 stop and re-scope before continuing.

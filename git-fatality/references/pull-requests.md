@@ -7,8 +7,13 @@ Read this reference only when drafting, creating, or updating a pull request.
 - "Draft" or "write PR text" means title and body only.
 - "Create" or "open a PR" means a ready PR unless the user says remote draft.
 - "Create a draft PR" means use the hosting platform's draft state.
-- PR creation does not authorize committing, pushing, or updating an existing
-  PR unless those actions were also requested.
+- Creating a PR includes publishing its inspected, already committed scope
+  when needed. Inspect the destination and outgoing commits first; pause if
+  their scope or destination is unclear. It does not authorize a new commit,
+  rewriting history, or updating an existing PR.
+- Honor explicit restrictions. With "do not push", use the published head only
+  when the user requested that scope; otherwise explain the unpublished scope
+  and finish the text before asking how to proceed.
 
 ## Resolve style and content
 
@@ -42,12 +47,21 @@ Choose the base in this order:
 3. the repository's default branch from the hosting platform
 4. the remote `HEAD` symbolic ref
 
-Inspect the complete `base...HEAD` diff and commit range. Exclude uncommitted
-files from the PR summary.
-
 Before creation, check for an open PR with the same head. Do not create a
 duplicate or overwrite an existing PR under creation-only authorization.
 Update it only when explicitly requested or after approval of a concrete update.
+
+Resolve the intended head repository and branch, then compare local `HEAD`
+with the actual published head commit. Publish the authorized committed scope
+when needed, following the push checks in `SKILL.md`. Confirm the remote head
+matches the inspected commit before creating the PR.
+
+For creation or an update, build the title and body from the merge-base diff
+`base...publishedHead` and commit range `base..publishedHead`, using the verified
+published head. This excludes unrelated changes made on the base after the
+branches diverged. For a text-only draft, local committed scope is allowed;
+use `base...HEAD` and identify it as unpublished when it differs from the remote.
+Exclude uncommitted files in both cases.
 
 ## Assignee and labels
 
@@ -70,6 +84,6 @@ local verification, then report the blocked remote mutation instead of claiming
 success.
 
 After creation or update, read authoritative hosting state and verify the URL,
-ready/draft state, base, head, title, body, assignees, and labels. If metadata
-application fails after creation, report the PR as created and the metadata
-step as incomplete rather than retrying creation.
+ready/draft state, base, head repository and branch, head commit, title, body,
+assignees, and labels. If metadata application fails after creation, report the
+PR as created and the metadata step as incomplete rather than retrying creation.

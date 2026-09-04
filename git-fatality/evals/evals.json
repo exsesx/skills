@@ -376,6 +376,48 @@
         "Reports the changed state without exposing secret values",
         "Continues only after the new scope and destination are clear"
       ]
+    },
+    {
+      "id": "E35",
+      "prompt": "Use git-fatality to publish this new local branch and set its upstream. Its HEAD is identical to origin/main, but the requested remote branch does not exist.",
+      "expected_output": "Create the intended remote branch and set tracking even though the commits already exist remotely.",
+      "assertions": [
+        "Checks the actual destination ref rather than only origin/main ahead counts",
+        "Publishes the current HEAD without making a commit",
+        "Verifies the destination commit and upstream relationship"
+      ]
+    },
+    {
+      "id": "E36",
+      "prompt": "Create a PR for this branch. The existing remote branch is one commit behind local HEAD, the outgoing commit is within the requested scope, and unrelated unstaged changes are present.",
+      "expected_output": "Inspect and push the already committed scope, then create a PR describing the verified published head.",
+      "assertions": [
+        "Checks for an existing PR before publishing under creation-only intent",
+        "Publishes the inspected committed scope without redundant approval",
+        "Preserves unstaged work and makes no new commit",
+        "Builds the description from the verified published head and base",
+        "Verifies the hosting head commit after creation"
+      ]
+    },
+    {
+      "id": "E37",
+      "prompt": "Create a PR for all committed work on this branch, but do not push. The local branch is ahead of the published branch.",
+      "expected_output": "Honor the push restriction, explain the missing published commits, prepare the text, and ask how to proceed before creation.",
+      "assertions": [
+        "Does not push or commit",
+        "Does not create a PR whose content silently omits the requested unpublished commits",
+        "Shows a concrete description and the blocked publication step"
+      ]
+    },
+    {
+      "id": "E38",
+      "prompt": "Use git-fatality to push this branch. The cached upstream equals HEAD, but the actual remote branch was deleted.",
+      "expected_output": "Verify the actual destination, recreate the authorized remote branch, and confirm its commit.",
+      "assertions": [
+        "Does not treat cached ahead/behind counts as authoritative remote state",
+        "Publishes only the inspected current branch",
+        "Verifies the actual remote ref afterward"
+      ]
     }
   ]
 }

@@ -1,0 +1,39 @@
+[
+  {
+    "id": "C01",
+    "turns": [
+      {
+        "user": "$write-like-me casual: the export works now but the attachment still needs checking",
+        "should_apply_profile": true
+      },
+      {
+        "user": "Explain why a pull request description should match the published commits. Use your normal response style.",
+        "should_apply_profile": false
+      }
+    ],
+    "assertions": [
+      "The first turn applies the casual register",
+      "The second turn answers the new question rather than rewriting it",
+      "The second turn does not invoke or announce write-like-me",
+      "Inspect the native client trace; punctuation alone does not prove whether a profile was applied"
+    ]
+  },
+  {
+    "id": "C02",
+    "turns": [
+      {
+        "user": "$write-like-me formal: we need approval before starting",
+        "should_apply_profile": true
+      },
+      {
+        "user": "$write-like-me: hey, seems to work now\ncan you check?",
+        "should_apply_profile": true
+      }
+    ],
+    "assertions": [
+      "The second invocation uses the casual default rather than inheriting formal",
+      "Preserves the uncertainty and question",
+      "Returns only the rewritten text"
+    ]
+  }
+]

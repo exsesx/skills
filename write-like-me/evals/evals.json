@@ -170,6 +170,26 @@
         "Keeps the two related thoughts in one conversational cluster",
         "Returns only the rewritten text"
       ]
+    },
+    {
+      "id": "E16",
+      "prompt": "$write-like-me business: can you send the revised estimate by Friday?",
+      "expected_output": "Use a concise, conventional request; could you is a mild preference, not a mandatory substitution.",
+      "assertions": [
+        "Preserves the Friday deadline",
+        "Accepts either can you or could you without adding a reason, urgency, or sign-off",
+        "Does not turn the request into a commitment"
+      ]
+    },
+    {
+      "id": "E17",
+      "prompt": "$write-like-me formal: the release is still subject to written approval",
+      "expected_output": "Preserve the approval condition using plain formal wording.",
+      "assertions": [
+        "Accepts is still subject to approval or remains subject to approval",
+        "Does not claim that approval has been granted",
+        "Uses a complete sentence and conventional punctuation"
+      ]
     }
   ]
 }
