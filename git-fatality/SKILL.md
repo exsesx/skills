@@ -17,16 +17,25 @@ portable across Codex, Claude Code, and other Agent Skills clients.
 
 ## Authorization
 
-- An explicit imperative such as "commit and push" authorizes exactly those
-  actions after scope and destination inspection. Do not ask again.
+- Resolve the requested actions from the current request and established
+  conversation context. Requests such as "commit and push" or "can you push
+  this?" authorize those actions after relevant inspection. Earlier scoped
+  authorization remains valid when the action, scope, and destination still
+  match; do not ask again just because the skill is invoked in a later turn.
 - Never widen the action set. Commit plus push does not imply a PR; push-only
   does not imply staging or committing. Creating a PR includes publishing the
   inspected, already committed scope needed for that PR; it does not include
   making a new commit. Explicit restrictions such as "do not push" win.
-- If invocation names no actions, inspect, propose the action set and text, and
-  wait. Preview-first wording also requires a stop before mutation.
+- If neither the request nor established context identifies authorized actions,
+  inspect, propose the action set and text, and wait. Preview-first wording
+  requires a stop before mutation.
 - Apply "yes" or "do it" only to the latest concrete proposal. Praise, silence,
   reactions, harness approval, or allow-all modes are not authorization.
+
+Explicit user instructions take precedence over this skill's defaults. Complete
+authorized inspection and drafting before asking a necessary question. If a
+skill rule requires a pause, name and link to the file, quote the relevant rule,
+and explain the concrete unresolved action or scope.
 
 ## Routine finalization
 
@@ -40,11 +49,13 @@ operation. Do not create or update a formal plan, todo list, or progress
 checklist. Give at most one short progress sentence, then act or report a real
 blocker.
 
-Inspect current Git state and the exact relevant diff before mutation. Refresh
-the branch, `HEAD`, index/worktree scope, upstream, and outgoing commit range on
-every invocation. Detect merge, rebase, am, cherry-pick, revert, and bisect
-state. Reuse applicable repository instructions, convention mode, remote
-knowledge, and successful validation from the current task.
+Inspect the current branch, `HEAD`, worktree/index status, and exact relevant
+diff before mutation. Detect merge, rebase, am, cherry-pick, revert, and bisect
+state. Inspect upstreams, remote refs, and outgoing commits when publishing;
+inspect the base and published head for PR work. A local commit or text-only
+commit draft needs no remote lookup. Reuse applicable repository instructions,
+convention mode, remote knowledge, and successful validation from the current
+task.
 
 Treat each requested stage independently. Skip a commit with no meaningful
 scope. A push is complete only when the intended remote branch exists at the

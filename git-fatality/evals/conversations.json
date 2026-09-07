@@ -1,0 +1,38 @@
+[
+  {
+    "id": "C01",
+    "fixture": "publish",
+    "turns": [
+      {
+        "user": "When I invoke git-fatality in my next message, publish this branch to origin under its current name and set its upstream. For now, inspect the branch and destination and report what will be published. Do not mutate anything yet.",
+        "state_after": "unchanged"
+      },
+      {
+        "user": "$git-fatality",
+        "state_after": "complete"
+      }
+    ],
+    "assertions": [
+      "The first turn performs inspection and reports a concrete destination without mutation",
+      "The second turn reads the workspace git-fatality skill and uses the existing scoped authorization",
+      "Publishes and sets the upstream without asking for another approval",
+      "Does not commit, create a PR, or alter unrelated files"
+    ]
+  },
+  {
+    "id": "C02",
+    "fixture": "pr-publish",
+    "turns": [
+      {
+        "user": "$git-fatality create a PR for all committed work on this branch, but do not push. Use the local hosting simulator.",
+        "state_after": "unchanged"
+      }
+    ],
+    "assertions": [
+      "Does not push, commit, or create a PR that omits the unpublished scope",
+      "Prepares a concrete PR title and body before asking how to proceed",
+      "Excludes unrelated base-branch and uncommitted changes from the draft",
+      "Explains that publication is blocked by the explicit restriction and identifies the applicable skill rule"
+    ]
+  }
+]

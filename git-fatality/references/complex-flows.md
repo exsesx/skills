@@ -11,8 +11,8 @@ user requested that exact operation and the state is appropriate.
 
 ## Preview, ambiguity, and state drift
 
-- A vague invocation with no action verbs requires a concrete action-set and
-  text proposal before mutation.
+- When neither the request nor established context identifies authorized
+  actions, prepare a concrete action-set and text proposal before mutation.
 - Preview-first wording requires a stop after drafting.
 - Bind a paused commit proposal to the branch, `HEAD`, and a read-only hash of
   the raw staged diff. Bind a push proposal to the branch, remote, upstream,

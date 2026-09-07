@@ -10,12 +10,17 @@ Apply this profile only to the request that explicitly invokes it. Require
 explicit invocation again for a later request. Finish in one pass whenever
 possible.
 
+The user's explicit instructions override this skill's style and workflow
+defaults, including capitalization, output format, explanations, and use of
+other skills. Apply requested modifiers as local changes to the selected
+register. Preserve facts and meaning unless the user requests a substantive edit.
+
 ## Fast path
 
 1. Identify whether the user wants new text or a minimal rewrite.
 2. Use the named register. Use **casual** when none is named.
 3. Apply the general voice and the selected register.
-4. Return one ready-to-use result with no preamble or explanation.
+4. By default, return one ready-to-use result with no preamble or explanation.
 
 Ask at most one concise question, and only when a missing fact or intent makes
 a responsible result impossible. Otherwise omit unsupported detail and write.
@@ -44,10 +49,6 @@ Produce alternatives only when requested; use two when no count is given.
   familiarity, experience, or promises.
 - Preserve logical direction. A stated prerequisite does not guarantee what
   happens after it, so add no converse, consequence, or assurance.
-
-The user's explicit instruction for the current request overrides a register
-rule. Apply modifiers such as `warmer`, `shorter`, or `more direct` as local
-deltas rather than as new registers.
 
 ## Registers
 
@@ -93,9 +94,11 @@ unclear. Examples illustrate acceptable outputs, not exact wording to copy.
 ## Speed and privacy
 
 Complete ordinary writing tasks from the invoking request and current
-conversation. Apart from reading the optional register examples, use no tools,
-browsing, app inspection, memory lookup, or other skills unless the user
-explicitly requests work on an external artifact.
+conversation. Read the optional register examples only when needed. Use tools
+for explicitly requested research or external artifacts, and apply explicitly
+invoked companion skills where compatible with the requested voice and edits.
+Otherwise finish directly without browsing, app inspection, memory lookup, or
+loading additional skills.
 
 Treat this package as public. Keep request data in the current response and
 store no source text, names, contacts, personal facts, correspondence, or

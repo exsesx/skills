@@ -1,0 +1,193 @@
+{
+  "date": "2026-09-06",
+  "client_version": "codex-cli 0.153.4",
+  "model_observed": "gpt-6-astra",
+  "effort_observed": "low",
+  "source_sha256": {
+    "evals/hosting.py": "5b99ec389c0e7015ffa7af5e982512c31bfbda05fc3f50d67aeec76f84f6af4a",
+    "evals/run.py": "7f4ba504bdb97509516853810fde60f02502326ef792de08d161cd2cc893f5fd",
+    "evals/test_run.py": "29b843227c410147d92071f9ecfc8b6efa7bb9a4eaf0f38547fde5a827120a52",
+    "git-fatality/SKILL.md": "6ec3d5bd891f79f4bd377a55281bd09511b50903950e8ea84fdeea59bf9888f1",
+    "git-fatality/agents/openai.yaml": "fdae5e1999f2406c25bd9f22e5e21d555eef65766db465e83bb8d869fcba5b7f",
+    "git-fatality/evals/conversations.json": "cd47770fa77a25127bb2254e7ef3b588affaf86467b42e7bc058a6675bc94ef9",
+    "git-fatality/evals/evals.json": "6b242b165a46ce98c511c09cd07af13093eda09600afcb7441a987dc5cfa66eb",
+    "git-fatality/evals/trigger_queries.json": "2c04f96fe012f2b53b8ab04777212b12a73bf183d1a8d6a6e8095e45da767642",
+    "git-fatality/references/complex-flows.md": "2aff7eccb1c1a9090133c6afdfa616b275086be5b42f0ec37b7058696c84d406",
+    "git-fatality/references/pull-requests.md": "42f8840767b926f55da255eb6cc650d20e201aed9f1c3ab7feda4b41a543d6fa",
+    "write-like-me/SKILL.md": "0eebaecf82152daa341989cd067238d40261e7dea2e61aa19440bbe379a9e3be",
+    "write-like-me/agents/openai.yaml": "86b72e809fd7176ab103c2ce35ad10bdb84d0ed734cc497a2bf7ee73ec487206",
+    "write-like-me/evals/conversations.json": "323ae85b28da9b668100373ceb2825cdc61574fa2b3e61cf6369f1772c43af5f",
+    "write-like-me/evals/evals.json": "33e5aadbd2f3b3a7afeb8c981bdec31bff8614b736727503aa9715f893cb86ed",
+    "write-like-me/evals/trigger_queries.json": "9b4548968c7bbbd4e8aa1ad5b10281e0b7d83326d4f3737dc7f14bc97923e535",
+    "write-like-me/evals/writing.json": "560d226dabedaa935e1ead1381460ad9138c293184b97406c1db53b839ed2a27",
+    "write-like-me/references/examples.md": "d417f5a8843732762698c326926796acf83504efcd2bd8754bfcf57bcd7e53ef"
+  },
+  "local_regressions": {
+    "passed": 16,
+    "failed": 0,
+    "command": "python3 -m unittest discover -s evals"
+  },
+  "git_forward_runs": [
+    {
+      "case": "publish",
+      "state_checks_passed": true,
+      "checks": {
+        "branch_preserved": true,
+        "worktree_files_preserved": true,
+        "remote_destination_preserved": true,
+        "no_new_commit": true,
+        "exact_head_published": true,
+        "other_remote_refs_preserved": true,
+        "upstream_correct": true,
+        "index_preserved": true
+      }
+    },
+    {
+      "case": "push-dirty",
+      "state_checks_passed": true,
+      "checks": {
+        "branch_preserved": true,
+        "worktree_files_preserved": true,
+        "remote_destination_preserved": true,
+        "no_new_commit": true,
+        "exact_head_published": true,
+        "other_remote_refs_preserved": true,
+        "upstream_correct": true,
+        "index_preserved": true
+      }
+    },
+    {
+      "case": "commit-staged",
+      "state_checks_passed": true,
+      "checks": {
+        "branch_preserved": true,
+        "worktree_files_preserved": true,
+        "remote_destination_preserved": true,
+        "one_commit": true,
+        "parent_preserved": true,
+        "committed_exact_index": true,
+        "index_clean": true,
+        "remote_unchanged": true
+      }
+    },
+    {
+      "case": "pr-publish",
+      "state_checks_passed": true,
+      "checks": {
+        "branch_preserved": true,
+        "worktree_files_preserved": true,
+        "remote_destination_preserved": true,
+        "no_new_commit": true,
+        "exact_head_published": true,
+        "other_remote_refs_preserved": true,
+        "upstream_correct": true,
+        "index_preserved": true,
+        "pr_created": true,
+        "pr_head_matches": true,
+        "pr_head_branch_correct": true,
+        "pr_head_repository_correct": true,
+        "pr_base_correct": true,
+        "pr_ready": true,
+        "pr_text_present": true,
+        "pr_assignee_correct": true,
+        "pr_labels_correct": true
+      }
+    }
+  ],
+  "git_trace_review": {
+    "commit-staged": "The question-form request committed the exact index. The model made no remote, upstream, outgoing-commit or hosting queries.",
+    "pr-publish": "Created a ready simulated PR from the verified published commit. Description included feature.txt and excluded unrelated base-branch advancement and uncommitted work."
+  },
+  "native_scenarios": [
+    {
+      "case": "git-fatality-C01",
+      "turns": 2,
+      "behavior_review": "pass",
+      "reviewer": "implementing agent reviewing independent Codex execution",
+      "evidence": "Turn 1 preserved all fixture state. Turn 2 loaded the workspace skill, refreshed branch and destination, then published the expected commit and set upstream without another approval question."
+    },
+    {
+      "case": "git-fatality-C02",
+      "turns": 1,
+      "behavior_review": "pass",
+      "reviewer": "implementing agent reviewing independent Codex execution",
+      "evidence": "Preserved the unpublished branch, remote, index and dirty files. Prepared a feature-only title and body before asking about the explicit push restriction; cited the applicable PR reference."
+    },
+    {
+      "case": "write-like-me-C01",
+      "turns": 2,
+      "behavior_review": "pass",
+      "reviewer": "implementing agent reviewing independent Codex execution",
+      "evidence": "The first turn used casual line breaks. The resumed turn answered the new question in normal explanatory prose, with no new skill attachment or tools."
+    },
+    {
+      "case": "write-like-me-C02",
+      "turns": 2,
+      "behavior_review": "pass",
+      "reviewer": "implementing agent reviewing independent Codex execution",
+      "evidence": "Formal first turn used conventional punctuation. A new invocation without a register returned to casual line breaks and preserved uncertainty."
+    },
+    {
+      "case": "write-like-me-C03",
+      "turns": 1,
+      "behavior_review": "pass",
+      "reviewer": "implementing agent reviewing independent Codex execution",
+      "evidence": "Honored lowercase i and supplied the requested one-sentence explanation. Used no tools or optional examples."
+    },
+    {
+      "case": "write-like-me-C04",
+      "turns": 1,
+      "behavior_review": "pass",
+      "reviewer": "implementing agent reviewing independent Codex execution",
+      "evidence": "Native input attached both workspace write-like-me and the synthetic eval-concise skill. Returned eight words while retaining written approval as a prerequisite."
+    },
+    {
+      "case": "write-like-me-C05",
+      "turns": 1,
+      "behavior_review": "pass",
+      "reviewer": "implementing agent reviewing independent Codex execution",
+      "evidence": "Read the workspace reference examples through the native shell tool and returned only the polished rewrite, preserving the tentative suggestion and possible benefit."
+    },
+    {
+      "case": "write-like-me-C06",
+      "turns": 1,
+      "behavior_review": "pass",
+      "reviewer": "implementing agent reviewing independent Codex execution",
+      "evidence": "No write-like-me skill was attached or announced, and no tools were called for the ordinary business rewrite."
+    }
+  ],
+  "writing_comparison": {
+    "case": "business",
+    "outputs": {
+      "baseline": "Thank you for the details. The proposed approach works for me, but I need the final estimate before I can approve it. Could you send it by Wednesday?",
+      "skill": "Thanks for the details. The proposed approach works for me, but I need the final estimate before I can approve it. Can you send that by Wednesday?"
+    },
+    "semantic_review": "Both outputs preserve the estimate prerequisite and Wednesday deadline. The skill output makes fewer wording changes. No human preference vote was collected.",
+    "native_skill_attachments": {
+      "baseline": [],
+      "skill": []
+    }
+  },
+  "isolation": {
+    "result": "Confirmed native target attachments came only from the evaluation workspace; supplied-instruction comparisons had no native target attachments.",
+    "correction": "Initial exploratory runs loaded installed copies alongside supplied or workspace instructions. Those runs are excluded from these results. Temporary CLI overrides now disable installed target copies while preserving existing skill overrides; unexpected external attachments fail execution."
+  },
+  "static_checks": [
+    "YAML frontmatter and invocation metadata parsed with Ruby",
+    "JSON parsing and unique case IDs",
+    "Local skill Markdown references resolve",
+    "Missing model settings rejected before creating outputs",
+    "Fixture preparation succeeds without model settings or calls",
+    "git diff --check"
+  ],
+  "limits": [
+    "One small run per scenario; not a statistical reliability or latency measurement",
+    "Native behavior was reviewed by the implementing agent from independent Codex outputs, skill attachments and tool traces; Git state assertions are automatic",
+    "Native execution validated Codex only; Claude adapter flags were checked against installed CLI help but not rerun live in this pass",
+    "Only the business register received a new paired comparison; existing human calibration remains unchanged",
+    "The remaining trigger and behavior matrices are review specifications, not executed coverage",
+    "PR creation used a local simulator, not GitHub",
+    "The bundled quick_validate.py could not run because PyYAML is unavailable; separate YAML, metadata and link checks passed",
+    "Codex startup required normal app-server state access outside the parent sandbox; child read-only or automatically reviewed workspace sandboxes were retained"
+  ]
+}

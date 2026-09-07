@@ -7,8 +7,11 @@ from pathlib import Path
 import tempfile
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
-from run import assess_case, git, git_env, grade_case, prepare_case, run_grade, write_json
+from run import (assess_case, codex_metadata, codex_skill_overrides, execute, git, git_env, grade_case,
+                 prepare_case, run_grade, toml_inline, unchanged_state, write_json)
+import tomllib
 
 
 class GradingTests(unittest.TestCase):
@@ -82,6 +85,92 @@ class GradingTests(unittest.TestCase):
         self.assertEqual(len(results), 2)
         self.assertIn("grading_error", results[0])
         self.assertTrue(results[1]["state_checks_passed"])
+
+    def test_preview_rejects_early_publication(self):
+        directory, expected = self.prepare()
+        self.assertTrue(all(unchanged_state(directory, expected).values()))
+        self.publish(directory, expected)
+        self.assertFalse(unchanged_state(directory, expected)["remote_refs_preserved"])
+
+    def test_no_push_rejects_pr_created_from_old_head(self):
+        directory, expected = self.prepare("pr-publish")
+        write_json(directory / "pr.json", {"head": expected["branch"]})
+        self.assertFalse(unchanged_state(directory, expected)["no_pr_created"])
+
+
+class ExecutionTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory(prefix="skill-execution-")
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.args = SimpleNamespace(client="codex", model="gpt-6-astra", effort="low", timeout=10,
+                                    skill_overrides=[], mode="writing")
+
+    def test_metadata_uses_latest_turn_of_only_the_requested_session(self):
+        day = self.root / "2026/09/06"
+        day.mkdir(parents=True)
+        (day / "rollout-unrelated.jsonl").write_text("invalid unrelated data")
+        records = [{"type": "turn_context", "payload": {"model": "gpt-6-astra", "effort": effort}}
+                   for effort in ("high", "low")]
+        (day / "rollout-session-1.jsonl").write_text("\n".join(json.dumps(r) for r in records))
+        result = codex_metadata([{"type": "thread.started", "thread_id": "session-1"}], self.root)
+        self.assertEqual(result["model_observed"], "gpt-6-astra")
+        self.assertEqual(result["effort_observed"], "low")
+        self.assertIsNone(result["metadata_error"])
+
+    def test_installed_skill_is_disabled_without_losing_existing_overrides(self):
+        home, codex_home = self.root / "home", self.root / "codex"
+        skill = home / ".agents/skills/write-like-me/SKILL.md"
+        skill.parent.mkdir(parents=True)
+        skill.write_text("A synthetic installed skill")
+        codex_home.mkdir()
+        (codex_home / "config.toml").write_text(
+            '[[skills.config]]\npath = "/another/skill/SKILL.md"\nenabled = false\n')
+        entries, disabled = codex_skill_overrides(home, codex_home)
+        parsed = tomllib.loads("entries = " + toml_inline(entries))["entries"]
+        self.assertIn({"path": "/another/skill/SKILL.md", "enabled": False}, parsed)
+        self.assertIn({"path": str(skill), "enabled": False}, parsed)
+        self.assertIn(str(skill), disabled)
+
+    def test_native_skill_attachment_is_visible_in_metadata(self):
+        day = self.root / "2026/09/06"
+        day.mkdir(parents=True)
+        record = {"type": "response_item", "payload": {"type": "message", "role": "user", "content": [
+            {"type": "input_text", "text": "<skill>\n<name>write-like-me</name>\n<path>/old/SKILL.md</path>\nbody"}]}}
+        (day / "rollout-session-1.jsonl").write_text(json.dumps(record))
+        result = codex_metadata([{"type": "thread.started", "thread_id": "session-1"}], self.root)
+        self.assertEqual(result["loaded_skill_paths"], ["/old/SKILL.md"])
+
+    def test_missing_metadata_is_unknown_not_the_requested_model(self):
+        result = codex_metadata([{"type": "thread.started", "thread_id": "missing"}], self.root)
+        self.assertIsNone(result["model_observed"])
+        self.assertIsNone(result["effort_observed"])
+
+    def test_successful_exit_without_response_is_execution_failure(self):
+        (self.root / "stdout.txt").write_text('{"type":"turn.completed"}\n')
+        with patch("run.capture", return_value={"returncode": 0, "seconds": 0}):
+            outcome = execute(self.args, self.root, "Synthetic request", read_only=True)
+        self.assertIn("error", outcome)
+        self.assertIn("error", json.loads((self.root / "execution.json").read_text()))
+
+    def test_observed_model_mismatch_does_not_pass_as_requested_model(self):
+        (self.root / "stdout.txt").write_text('{"type":"turn.completed"}\n')
+        (self.root / "final.txt").write_text("A completed response")
+        with patch("run.capture", return_value={"returncode": 0, "seconds": 0}), patch(
+            "run.codex_metadata", return_value={"model_observed": "different-model", "effort_observed": "low", "loaded_skill_paths": []}
+        ):
+            outcome = execute(self.args, self.root, "Synthetic request", read_only=True)
+        self.assertIn("error", outcome)
+
+    def test_installed_skill_contamination_fails_the_comparison(self):
+        (self.root / "stdout.txt").write_text('{"type":"turn.completed"}\n')
+        (self.root / "final.txt").write_text("A plausible response")
+        with patch("run.capture", return_value={"returncode": 0, "seconds": 0}), patch(
+            "run.codex_metadata", return_value={"model_observed": "gpt-6-astra", "effort_observed": "low",
+                                               "loaded_skill_paths": ["/old/write-like-me/SKILL.md"]}
+        ):
+            outcome = execute(self.args, self.root, "Synthetic request", read_only=True)
+        self.assertIn("error", outcome)
 
 
 if __name__ == "__main__":

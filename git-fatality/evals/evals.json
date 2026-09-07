@@ -418,6 +418,17 @@
         "Publishes only the inspected current branch",
         "Verifies the actual remote ref afterward"
       ]
+    },
+    {
+      "id": "E39",
+      "prompt": "Can you use git-fatality to commit only the staged changes? This is a local-only task; no publication is requested.",
+      "expected_output": "Inspect and commit the staged scope without a redundant confirmation or remote lookup.",
+      "assertions": [
+        "Treats can you commit as an action request",
+        "Inspects branch, HEAD, operation state and staged content",
+        "Performs no upstream, outgoing-commit, hosting or remote-ref lookup",
+        "Preserves unstaged and untracked changes and normal hooks and signing"
+      ]
     }
   ]
 }

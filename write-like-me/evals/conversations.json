@@ -35,5 +35,65 @@
       "Preserves the uncertainty and question",
       "Returns only the rewritten text"
     ]
+  },
+  {
+    "id": "C03",
+    "turns": [
+      {
+        "user": "$write-like-me business: fix this sentence, keep everything lowercase, then explain your edit in one sentence: i think the summary need one more review before approval",
+        "should_apply_profile": true
+      }
+    ],
+    "assertions": [
+      "The rewrite and explanation are lowercase, including i",
+      "Provides the requested explanation after the rewrite",
+      "Preserves uncertainty and the review requirement",
+      "Uses no tools beyond reading the invoked skill; does not load optional examples for this clear register"
+    ]
+  },
+  {
+    "id": "C04",
+    "companion": true,
+    "turns": [
+      {
+        "user": "Use $write-like-me business and $eval-concise to rewrite: we need to have your written approval before we can begin the work",
+        "should_apply_profile": true
+      }
+    ],
+    "assertions": [
+      "Loads both workspace skills, including eval-concise",
+      "The draft has at most eight words",
+      "Preserves written approval as a prerequisite without guaranteeing a start",
+      "Returns only the draft without a refusal to combine skills"
+    ]
+  },
+  {
+    "id": "C05",
+    "turns": [
+      {
+        "user": "$write-like-me polished: consult the register examples to guide the punctuation, then rewrite only this text: i think we should check the export first\ncould save us some work later",
+        "should_apply_profile": true
+      }
+    ],
+    "assertions": [
+      "Reads the workspace write-like-me reference examples through the native tool path",
+      "Preserves the tentative suggestion and possible benefit",
+      "Returns only the rewrite with conversational rhythm",
+      "Does not browse or inspect unrelated apps or memory"
+    ]
+  },
+  {
+    "id": "C06",
+    "turns": [
+      {
+        "user": "Rewrite this in a concise business register: thanks for the update, the proposed date works for me",
+        "should_apply_profile": false
+      }
+    ],
+    "assertions": [
+      "Does not load or announce write-like-me without explicit invocation",
+      "Completes the requested rewrite",
+      "Check the trace and loaded instructions rather than treating punctuation as proof of activation"
+    ]
   }
 ]
