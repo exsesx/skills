@@ -97,10 +97,9 @@ plain, direct, and free of inflated or bureaucratic language.
 ## Speed and privacy
 
 Complete ordinary writing tasks from the invoking request and current
-conversation. Use tools
-for explicitly requested research or external artifacts, and apply explicitly
-invoked companion skills where compatible with the requested voice and edits.
-Otherwise finish directly without browsing, app inspection, memory lookup, or
+conversation. Use tools for explicitly requested research or external
+artifacts, and apply explicitly invoked companion skills where compatible with
+the requested voice and edits. Otherwise finish directly without browsing, app inspection, memory lookup, or
 loading additional skills.
 
 Treat this package as public. Keep request data in the current response and
