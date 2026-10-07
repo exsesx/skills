@@ -1,26 +1,20 @@
 # Complex Git Flows
 
-Read this reference only when finalization includes branch creation, named
-synchronization, multiple commits, ambiguous scope, a preview or pause,
-recovery, or a risky operation.
-
-Before mutation, detect detached `HEAD` and merge, rebase, am, cherry-pick,
-revert, or bisect state. Do not treat an in-progress operation as routine or
-create an unrelated commit inside it. Continue or conclude it only when the
-user requested that exact operation and the state is appropriate.
+With a detached `HEAD` or an in-progress merge, rebase, am, cherry-pick,
+revert, or bisect, do not treat the work as routine or create an unrelated
+commit inside it. Continue or conclude the operation only when the user
+requested that exact operation and the state is appropriate.
 
 ## Preview, ambiguity, and state drift
 
-- When neither the request nor established context identifies authorized
-  actions, prepare a concrete action-set and text proposal before mutation.
-- Preview-first wording requires a stop after drafting.
 - Bind a paused commit proposal to the branch, `HEAD`, and a read-only hash of
-  the raw staged diff. Bind a push proposal to the branch, remote, upstream,
-  and outgoing range.
+  the raw staged diff, such as
+  `git diff --cached --binary --no-ext-diff | git hash-object --stdin`. Bind a
+  push proposal to the branch, remote, upstream, and outgoing range.
 - After new user input or any relevant state change, re-inspect and compare
   those values. Re-scope instead of acting on stale authorization.
-- A formal plan is optional only when it materially clarifies independent
-  commits, ambiguity, synchronization, PR mutation, or recovery.
+- Use a formal plan only when it materially clarifies independent commits,
+  ambiguity, synchronization, PR mutation, or recovery.
 
 ## Branch creation
 
@@ -34,7 +28,8 @@ configured remotes needed for evidence. Normalize remote namespaces, exclude
 symbolic remote `HEAD` refs and stale refs, and fall back to the personal policy
 when no dominant convention exists.
 
-Use create-only semantics. Pause for an invalid name, collision, unsafe base,
+Use create-only semantics, such as `git switch -c`. Pause for an invalid name
+(check with `git check-ref-format --branch`), collision, unsafe base,
 unexpected branch state, or a requested rename. Never force-create, reset, or
 create an orphan branch unless explicitly requested after the risk is known.
 
@@ -61,11 +56,12 @@ commit, not an unrelated later commit, push, or PR.
 
 ## Failure and recovery
 
-- Hook or signing failure: preserve the index and never weaken the check.
+- Hook or signing failure: preserve the index, report the failure, and stop
+  later stages that depend on the commit.
 - Authentication, network, or hosting failure: preserve local state and report
   the blocker.
-- Non-fast-forward push: inspect divergence; do not choose pull, merge, rebase,
-  or force-push without authorization.
+- Non-fast-forward push: inspect and report the divergence, then wait for the
+  user to choose a recovery action.
 - Partial PR success: verify whether the PR exists before retrying creation.
 - Rewrite, force-push, discard, or deletion: explain the concrete risk and
   require authorization for that exact action.

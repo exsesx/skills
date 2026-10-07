@@ -1,16 +1,13 @@
 # Pull Request Workflow
 
-Read this reference only when drafting, creating, or updating a pull request.
-
 ## Interpret intent
 
 - "Draft" or "write PR text" means title and body only.
 - "Create" or "open a PR" means a ready PR unless the user says remote draft.
 - "Create a draft PR" means use the hosting platform's draft state.
-- Creating a PR includes publishing its inspected, already committed scope
-  when needed. Inspect the destination and outgoing commits first; pause if
-  their scope or destination is unclear. It does not authorize a new commit,
-  rewriting history, or updating an existing PR.
+- Before publishing the committed scope a new PR needs, inspect the destination
+  and outgoing commits; pause if their scope or destination is unclear.
+  Creation does not authorize rewriting history or updating an existing PR.
 - Honor explicit restrictions. With "do not push", use the published head only
   when the user requested that scope; otherwise explain the unpublished scope
   and finish the text before asking how to proceed.
@@ -25,10 +22,8 @@ default branch when the hosting platform does. Use the selected template
 verbatim as the skeleton, preserve its sections and order, and fill every
 required field.
 
-In `personal` mode, do not query merged PR history for style. Without a required
-template, use the personal title style and `## Summary` with concise,
-diff-grounded bullets. Apply the personal commit casing and punctuation rules
-to generated PR titles and body bullets.
+In `personal` mode, use the personal pull request style in `SKILL.md` and do
+not query merged PR history for style.
 
 In `repo` mode, still inspect required templates first. Query a bounded sample
 of recent merged PRs only when written instructions and templates leave
@@ -43,13 +38,15 @@ user impact. Add a test-plan section only when requested or required.
 Choose the base in this order:
 
 1. the user's explicit base
-2. the head branch's configured hosting merge base
+2. the head branch's configured hosting merge base, such as
+   `branch.<name>.gh-merge-base` for GitHub
 3. the repository's default branch from the hosting platform
 4. the remote `HEAD` symbolic ref
 
-Before creation, check for an open PR with the same head. Do not create a
-duplicate or overwrite an existing PR under creation-only authorization.
-Update it only when explicitly requested or after approval of a concrete update.
+Before creation, check for an open PR with the same head, for example
+`gh pr list --head <branch> --state open`. Do not create a duplicate or
+overwrite an existing PR under creation-only authorization. Update it only when
+explicitly requested or after approval of a concrete update.
 
 Resolve the intended head repository and branch, then compare local `HEAD`
 with the actual published head commit. Publish the authorized committed scope
@@ -68,9 +65,10 @@ Exclude uncommitted files in both cases.
 Self-assign with `@me` by default. A named assignee replaces that default; an
 explicit opt-out leaves the PR unassigned.
 
-Inspect the complete available label set. Apply only existing labels that
-clearly match the work, and never create labels. Explicit labels or an explicit
-label opt-out override inference.
+Inspect the complete available label set; listing tools often truncate, so
+raise the limit (for example, `gh label list --limit 1000`, which otherwise
+returns 30). Apply only existing labels that clearly match the work, and never
+create labels. Explicit labels or an explicit label opt-out override inference.
 
 ## Create or update safely
 
