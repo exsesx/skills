@@ -2,6 +2,6 @@ interface:
   display_name: "Git Fatality"
   short_description: "Finalize Git work quickly and safely"
   brand_color: "#E11D48"
-  default_prompt: "Use $git-fatality to execute only the Git finalization I request, use my personal conventions by default, skip formal planning for routine work, and verify the result."
+  default_prompt: "Use $git-fatality to run only the Git finalization I request and verify the result."
 policy:
   allow_implicit_invocation: true

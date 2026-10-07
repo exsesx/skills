@@ -41,6 +41,12 @@ to use bounded repository evidence instead; unclear evidence falls back to the
 personal conventions. These are plain-language prompt selectors, not a
 configuration-file syntax.
 
+`write-like-me` is explicit-only in both clients: `disable-model-invocation`
+in its frontmatter covers Claude Code, and `agents/openai.yaml` covers Codex.
+Claude Code accepts that frontmatter field, but claude.ai skill uploads and the
+Skills API accept only the Agent Skills spec fields and reject the package. To
+upload it there, remove the field first; it will then be model-invocable.
+
 Explicit invocation is always supported:
 
 ```text
@@ -92,7 +98,8 @@ npx skills remove <skill-name>
 ├── evals/
 │   ├── run.py
 │   ├── hosting.py
-│   └── test_run.py
+│   ├── test_run.py
+│   └── test_skills.py
 ├── git-fatality/
 │   ├── SKILL.md
 │   ├── agents/
@@ -112,11 +119,15 @@ The small evaluation runner uses Python 3.11+'s standard library and installed
 agent CLIs. Runs are opt-in and require a new output directory. Model calls
 use your existing account and can incur usage. Nothing is installed.
 
-Check the grader without making model calls:
+Check the grader and the skill package format without making model calls:
 
 ```bash
 python3 -m unittest discover -s evals
 ```
+
+The format checks cover the Agent Skills frontmatter limits, matching
+explicit-only policy between Claude Code and Codex metadata, resolvable
+one-level references, the plugin manifest, and unique eval IDs.
 
 Run the four Git cases through Codex with an explicit model and reasoning effort:
 

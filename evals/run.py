@@ -486,15 +486,13 @@ def main():
         if subparser is not grade:
             subparser.add_argument("--timeout", type=int, default=300, help="Seconds per model call")
             subparser.add_argument("--model", help="Explicit model ID; required for model calls")
-            subparser.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max", "ultra"],
+            subparser.add_argument("--effort", choices=["low", "medium", "high", "xhigh", "max"],
                                    help="Explicit reasoning effort; required for model calls")
             subparser.set_defaults(client="codex")
     args = parser.parse_args()
     model_calls = args.mode != "grade" and not getattr(args, "prepare_only", False)
     if model_calls and (not args.model or not args.effort):
         parser.error("Model calls require --model and --effort; no machine defaults are inferred")
-    if model_calls and args.client == "claude" and args.effort == "ultra":
-        parser.error("Claude does not support the ultra effort option")
     args.output = args.output.resolve()
     if args.mode != "grade":
         args.output.mkdir(parents=True, exist_ok=False)

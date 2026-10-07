@@ -1,5 +1,10 @@
 {
   "name": "oleh-vanin-skills",
+  "description": "Personal agent skills for Git finalization and writing in a personal voice",
+  "author": {
+    "name": "Oleh Vanin",
+    "url": "https://github.com/exsesx"
+  },
   "skills": [
     "./git-fatality",
     "./write-like-me"

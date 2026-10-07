@@ -1,19 +1,19 @@
 ---
 name: git-fatality
 description: >-
-  Finalizes Git work through commit, push, branch, and pull request actions.
-  Use when the user explicitly invokes git-fatality or asks to draft commit or
-  PR text, commit an agreed scope, push or publish a branch, create or update a
-  pull request, or otherwise ship work through one of those actions. Do not
-  invoke it implicitly for status or diff review, fetch, pull, merge, rebase,
-  cherry-pick, conflict resolution, stash, or branch management unless the same
-  request includes a covered finalization action.
+  Finalizes Git work by committing, pushing, creating branches, and opening or
+  updating pull requests. Use when the user explicitly invokes git-fatality or
+  asks to draft commit or PR text, commit an agreed scope, push or publish a
+  branch, create or update a pull request, or otherwise ship work through one
+  of those actions. Do not invoke it implicitly for status or diff review,
+  fetch, pull, merge, rebase, cherry-pick, conflict resolution, stash, or
+  branch management unless the same request includes a covered finalization
+  action.
 ---
 
 # Git Fatality
 
-Execute exactly the Git finalization the user requests. Keep the workflow
-portable across Codex, Claude Code, and other Agent Skills clients.
+Execute exactly the Git finalization the user requests.
 
 ## Authorization
 
@@ -65,8 +65,8 @@ branch. If every requested stage is complete, report that immediately.
 
 Finalization does not discover or rerun project builds or tests by default.
 Run checks only when the user requests them, applicable repository instructions
-require them, or no still-applicable result exists for a required check. Never
-bypass normal commit hooks.
+require them, or no still-applicable result exists for a required check. Normal
+commit hooks still run.
 
 For a commit:
 
@@ -122,9 +122,9 @@ flows perform no convention lookup.
 ### Personal pull request style
 
 Use the required repository template when present. Otherwise use the commit
-subject style for the title and `## Summary` with concise bullets. Do not add a
-test-plan section unless requested or required. Generated titles and body
-bullets follow the personal commit casing and punctuation rules. Read
+subject style for the title and `## Summary` with concise bullets. Generated
+titles and body bullets follow the personal commit casing and punctuation
+rules. Read
 [references/pull-requests.md](references/pull-requests.md) for any PR drafting
 or mutation.
 
@@ -141,18 +141,18 @@ invent ticket IDs. An exact valid branch name supplied by the user wins.
 ## Complex flows and safety
 
 Read [references/complex-flows.md](references/complex-flows.md) only for branch
-creation, named synchronization, multiple commits, ambiguous scope,
-preview/pause state binding, failures, recovery, rewrite/force operations, or
-other materially complex finalization.
+creation, detached `HEAD` or an in-progress Git operation, named
+synchronization, multiple commits, ambiguous scope, preview/pause state
+binding, failures, recovery, rewrite/force operations, or other materially
+complex finalization.
 
-Never invent a commit without meaningful scope; stage a suspected secret;
-use `--no-verify` or `--no-gpg-sign`; disable signing; rewrite published
-history; force-push; discard work; or delete branches unless the user explicitly
-requests the exact risky action after the risk is known. Preserve verified state
-on failure. A non-fast-forward push never authorizes an automatic pull, merge,
-rebase, or force-push.
+Unless the user explicitly requests the exact risky action after the risk is
+known, never stage a suspected secret, bypass hooks or signing (`--no-verify`,
+`--no-gpg-sign`, or disabling signing), rewrite published history, force-push,
+discard work, or delete branches. A non-fast-forward push never authorizes an
+automatic pull, merge, rebase, or force-push. Preserve verified state on
+failure.
 
-Do not print secret values. Treat `.env*`, credentials, keys, tokens, signing
-material, and unexpectedly large or generated artifacts as scope hazards;
-inspect them without exposing sensitive contents and require confirmation
-before staging a suspected secret.
+Treat `.env*`, credentials, keys, tokens, signing material, and unexpectedly
+large or generated artifacts as scope hazards. Inspect them without printing
+secret values, and ask before staging a suspected secret.
