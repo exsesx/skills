@@ -1,6 +1,9 @@
 ---
 name: write-like-me
-description: Write or rewrite text in the user's personal voice.
+description: >-
+  Writes or rewrites text in the user's personal voice using a casual
+  (default), polished, business, or formal register. Use only when the user
+  explicitly invokes write-like-me.
 disable-model-invocation: true
 ---
 
@@ -39,11 +42,11 @@ Produce alternatives only when requested; use two when no count is given.
 - Keep greetings, sign-offs, context, praise, commitments, and enthusiasm only
   when the source or request calls for them.
 - Preserve source emojis and expressive punctuation such as `!`, `?`, `?!`,
-  and intentional repetition.
-- When the source uses emojis, match its approximate frequency, energy, and
-  style without increasing their intensity.
+  and intentional repetition, matching their approximate frequency, energy,
+  and style without increasing their intensity. Swap punctuation or emojis
+  only on explicit request.
 - For new drafts or emoji-free source, add no emoji unless the user explicitly
-  requests one. Swap punctuation and emojis only on explicit request.
+  requests one.
 - Capitalize normally, including `I`.
 - Keep the user's stance and level of certainty. Never invent facts, feelings,
   familiarity, experience, or promises.
@@ -51,6 +54,10 @@ Produce alternatives only when requested; use two when no count is given.
   happens after it, so add no converse, consequence, or assurance.
 
 ## Registers
+
+When the requested tone is unclear, read
+[references/examples.md](references/examples.md) for one example per register.
+Examples illustrate acceptable outputs, not exact wording to copy.
 
 ### Casual — default
 
@@ -87,14 +94,10 @@ Use complete sentences, standard grammar and punctuation, precise wording, and
 a restrained tone. Remove casual fragments and slang while keeping the result
 plain, direct, and free of inflated or bureaucratic language.
 
-For concrete examples of the registers, read
-[references/examples.md](references/examples.md) when the requested tone is
-unclear. Examples illustrate acceptable outputs, not exact wording to copy.
-
 ## Speed and privacy
 
 Complete ordinary writing tasks from the invoking request and current
-conversation. Read the optional register examples only when needed. Use tools
+conversation. Use tools
 for explicitly requested research or external artifacts, and apply explicitly
 invoked companion skills where compatible with the requested voice and edits.
 Otherwise finish directly without browsing, app inspection, memory lookup, or
