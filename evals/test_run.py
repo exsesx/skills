@@ -4,6 +4,8 @@ from contextlib import redirect_stdout
 import io
 import json
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -96,6 +98,19 @@ class GradingTests(unittest.TestCase):
         directory, expected = self.prepare("pr-publish")
         write_json(directory / "pr.json", {"head": expected["branch"]})
         self.assertFalse(unchanged_state(directory, expected)["no_pr_created"])
+
+    def test_simulator_reports_unpublished_head_without_creating_pr(self):
+        directory, expected = self.prepare("pr-publish")
+        git(directory / "repo", "push", "origin", "--delete", expected["branch"], env=git_env(directory))
+        (directory / "body.md").write_text("summary\n")
+        result = subprocess.run(
+            [sys.executable, str(directory / "hosting.py"), "create", "--base", "main",
+             "--head", expected["branch"], "--title", "add feature", "--body-file", str(directory / "body.md")],
+            capture_output=True, text=True, env=git_env(directory))
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("publish it first", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertFalse((directory / "pr.json").exists())
 
 
 class ExecutionTests(unittest.TestCase):

@@ -34,13 +34,21 @@ def main():
     else:
         if state.exists():
             parser.error("A PR already exists")
-        head_sha = subprocess.check_output(
-            ["git", "--git-dir", str(root / "remote.git"), "rev-parse", "--verify", "refs/heads/" + args.head],
-            text=True,
-        ).strip()
+        try:
+            body = Path(args.body_file).read_text()
+        except OSError as error:
+            parser.error("Cannot read --body-file: " + str(error))
+        try:
+            head_sha = subprocess.check_output(
+                ["git", "--git-dir", str(root / "remote.git"), "rev-parse", "--verify", "--quiet",
+                 "refs/heads/" + args.head],
+                text=True,
+            ).strip()
+        except subprocess.CalledProcessError:
+            parser.error("Head branch " + repr(args.head) + " does not exist on the remote; publish it first")
         result = {"url": "https://example.invalid/fixture/project/pull/1", "base": args.base,
                   "head_repository": "fixture/project", "head": args.head, "head_sha": head_sha,
-                  "title": args.title, "body": Path(args.body_file).read_text(), "draft": args.draft,
+                  "title": args.title, "body": body, "draft": args.draft,
                   "assignees": args.assignee, "labels": args.label}
         state.write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps(result, indent=2))
