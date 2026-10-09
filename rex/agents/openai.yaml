@@ -1,0 +1,6 @@
+interface:
+  display_name: "Rex"
+  short_description: "Drive the Rex terminal multiplexer"
+  default_prompt: "Use $rex to run this in a visible pane and report the result."
+policy:
+  allow_implicit_invocation: true

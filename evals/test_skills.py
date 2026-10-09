@@ -32,7 +32,7 @@ def frontmatter(path):
 
 class SkillPackageTests(unittest.TestCase):
     def test_skills_found(self):
-        self.assertEqual([p.name for p in SKILLS], ["git-fatality", "write-like-me"])
+        self.assertEqual([p.name for p in SKILLS], ["git-fatality", "rex", "write-like-me"])
 
     def test_frontmatter_follows_spec(self):
         for skill in SKILLS:

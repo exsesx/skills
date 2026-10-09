@@ -20,6 +20,16 @@ Skills format and are designed for both Codex and Claude Code.
   npx skills@latest add exsesx/skills --skill git-fatality
   ```
 
+- **rex** — Drive the [Rex](https://www.superlogical.com/rex) terminal
+  multiplexer from inside one of its panes: run long processes in visible
+  splits, read and type into other panes, wait on the status that programs and
+  agents report, hand work to another agent in a sibling pane, and edit Rex's
+  Lua config without freezing the app.
+
+  ```bash
+  npx skills@latest add exsesx/skills --skill rex
+  ```
+
 - **write-like-me** — Draft or rewrite text in a natural personal voice using
   casual, polished, business, or formal registers. It activates only through
   explicit `$write-like-me` or `/write-like-me` invocation.
@@ -105,6 +115,10 @@ npx skills remove <skill-name>
 │   ├── agents/
 │   ├── evals/
 │   └── references/
+├── rex/
+│   ├── SKILL.md
+│   ├── agents/
+│   └── await-status.lua
 ├── write-like-me/
 │   ├── SKILL.md
 │   ├── agents/
