@@ -44,7 +44,7 @@ rex block call -b <block> process         # foreground program, cwd, pid
 rex block call -b <block> program_status  # what the program reports (OSC 7501)
 ```
 
-`program_status` records carry `state` (`idle`, `working`, `done`, `blocked` with a `kind`, `error`), `app`, and `msg`. Claude Code reports these natively: `idle` at its prompt, `working` during a turn, `done` after it. Trust them over screen text; empty `records` means fall back to `capture`. Typing into a pane you did not create is the user's call.
+`program_status` records carry `state` (`idle`, `working`, `done`, `blocked` with a `kind`, `error`), `app`, and `msg`. Agents report natively: Claude Code goes `idle` at its prompt, `working` during a turn, and `done` after it; Codex reports `working` (from startup on) and clears its record when it stops. Trust status over screen text, and use `capture` for the content. Typing into a pane you did not create is the user's call.
 
 ## Running a command in a pane
 
@@ -54,7 +54,7 @@ rex block call -b <block> program_status  # what the program reports (OSC 7501)
 
 ## Watching
 
-`<skill-dir>/await-status.lua` returns on the first `blocked`, `done`, or `error` status from any pane but yours, or only from `block=<full block ID>`:
+`<skill-dir>/await-status.lua` returns on the first `blocked`, `done`, or `error` status, or cleared record (`"event":"program_status_removed"`), from any pane but yours, or only from `block=<full block ID>`:
 
 ```sh
 timeout 3600 rex do <skill-dir>/await-status.lua --all seconds=3540
@@ -66,10 +66,10 @@ Without `--all` it watches the current session; on timeout it returns `{"timeout
 
 To hand work to another agent in a sibling pane:
 
-1. Start it: `rex split --split=right --focus=false --label reviewer -c "$PWD" --json -- claude` (or `codex`). It is ready when `program_status` reports `idle`, or, without status, when `capture` shows its input prompt.
+1. Start it: `rex split --split=right --focus=false --label reviewer -c "$PWD" --json -- claude` (or `codex`). It is ready when `capture` shows its input prompt and its status is `idle` or has no record.
 2. Start the watcher before prompting, so a fast finish cannot slip past: `timeout 1800 rex do <skill-dir>/await-status.lua block=<id> seconds=1780 > /tmp/rex-reviewer.json &`.
-3. Prompt it as in "Running a command in a pane", then `wait` for the watcher.
-4. On `done`, read the reply with `capture`. A reply longer than the screen is easier to collect by asking the agent to write it to a file and reading the file. On `blocked`, show the user what it asks.
+3. Send the task exactly as the user would type it, as in "Running a command in a pane", then `wait` for the watcher. Status marks the end of the turn, so the prompt carries the task alone.
+4. When the watcher returns `done` or a cleared record, read the reply with `capture`. A reply longer than the screen is easier to collect by asking the agent to write it to a file and reading the file. On `blocked`, show the user what it asks.
 
 ## Lua
 
