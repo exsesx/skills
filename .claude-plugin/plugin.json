@@ -1,13 +1,12 @@
 {
   "name": "oleh-vanin-skills",
-  "description": "Personal agent skills for Git finalization, writing in a personal voice, and driving the Rex terminal multiplexer",
+  "description": "Personal agent skills for Git finalization and writing in a personal voice",
   "author": {
     "name": "Oleh Vanin",
     "url": "https://github.com/exsesx"
   },
   "skills": [
     "./git-fatality",
-    "./rex",
     "./write-like-me"
   ]
 }
