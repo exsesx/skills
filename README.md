@@ -20,14 +20,22 @@ Skills format and are designed for both Codex and Claude Code.
   npx skills@latest add exsesx/skills --skill git-fatality
   ```
 
-- **write-like-me** — Draft or rewrite text in a natural personal voice using
+- **my-voice** — Draft or rewrite text in a natural personal voice using
   casual, polished, business, or formal registers. It activates only through
-  explicit `$write-like-me` or `/write-like-me` invocation.
+  explicit `$my-voice` or `/my-voice` invocation.
   Explicit requests override style and workflow defaults, including output
   format, explanations, and compatible companion skills.
 
   ```bash
-  npx skills@latest add exsesx/skills --skill write-like-me
+  npx skills@latest add exsesx/skills --skill my-voice
+  ```
+
+  Formerly `write-like-me`, renamed to avoid clashing with the official skill
+  of that name. If you installed the old name, remove it and add this one:
+
+  ```bash
+  npx skills@latest remove write-like-me
+  npx skills@latest add exsesx/skills --skill my-voice
   ```
 
 `git-fatality` can activate implicitly for commit, push, PR, and explicit Git
@@ -41,7 +49,7 @@ to use bounded repository evidence instead; unclear evidence falls back to the
 personal conventions. These are plain-language prompt selectors, not a
 configuration-file syntax.
 
-`write-like-me` is explicit-only in both clients: `disable-model-invocation`
+`my-voice` is explicit-only in both clients: `disable-model-invocation`
 in its frontmatter covers Claude Code, and `agents/openai.yaml` covers Codex.
 Claude Code accepts that frontmatter field, but claude.ai skill uploads and the
 Skills API accept only the Agent Skills spec fields and reject the package. To
@@ -105,7 +113,7 @@ npx skills remove <skill-name>
 │   ├── agents/
 │   ├── evals/
 │   └── references/
-├── write-like-me/
+├── my-voice/
 │   ├── SKILL.md
 │   ├── agents/
 │   ├── evals/
@@ -178,7 +186,7 @@ Native mode copies both packages into a disposable workspace's `.agents/skills`
 and resumes actual Codex sessions for multi-turn cases. The conversation files
 cover prior Git authorization, an explicit push restriction, writing overrides,
 an explicitly invoked synthetic companion skill, optional example loading,
-non-invocation, and profile carryover. `--case write-like-me-C03` runs only the
+non-invocation, and profile carryover. `--case my-voice-C03` runs only the
 override case; `native --help` lists all choices. Git cases use the same local
 repositories and hosting simulator as the forward checks.
 

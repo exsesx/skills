@@ -3,7 +3,7 @@
     "id": "C01",
     "turns": [
       {
-        "user": "$write-like-me casual: the export works now but the attachment still needs checking",
+        "user": "$my-voice casual: the export works now but the attachment still needs checking",
         "should_apply_profile": true
       },
       {
@@ -14,7 +14,7 @@
     "assertions": [
       "The first turn applies the casual register",
       "The second turn answers the new question rather than rewriting it",
-      "The second turn does not invoke or announce write-like-me",
+      "The second turn does not invoke or announce my-voice",
       "Inspect the native client trace; punctuation alone does not prove whether a profile was applied"
     ]
   },
@@ -22,11 +22,11 @@
     "id": "C02",
     "turns": [
       {
-        "user": "$write-like-me formal: we need approval before starting",
+        "user": "$my-voice formal: we need approval before starting",
         "should_apply_profile": true
       },
       {
-        "user": "$write-like-me: hey, seems to work now\ncan you check?",
+        "user": "$my-voice: hey, seems to work now\ncan you check?",
         "should_apply_profile": true
       }
     ],
@@ -40,7 +40,7 @@
     "id": "C03",
     "turns": [
       {
-        "user": "$write-like-me business: fix this sentence, keep everything lowercase, then explain your edit in one sentence: i think the summary need one more review before approval",
+        "user": "$my-voice business: fix this sentence, keep everything lowercase, then explain your edit in one sentence: i think the summary need one more review before approval",
         "should_apply_profile": true
       }
     ],
@@ -56,7 +56,7 @@
     "companion": true,
     "turns": [
       {
-        "user": "Use $write-like-me business and $eval-concise to rewrite: we need to have your written approval before we can begin the work",
+        "user": "Use $my-voice business and $eval-concise to rewrite: we need to have your written approval before we can begin the work",
         "should_apply_profile": true
       }
     ],
@@ -71,12 +71,12 @@
     "id": "C05",
     "turns": [
       {
-        "user": "$write-like-me polished: consult the register examples to guide the punctuation, then rewrite only this text: i think we should check the export first\ncould save us some work later",
+        "user": "$my-voice polished: consult the register examples to guide the punctuation, then rewrite only this text: i think we should check the export first\ncould save us some work later",
         "should_apply_profile": true
       }
     ],
     "assertions": [
-      "Reads the workspace write-like-me reference examples through the native tool path",
+      "Reads the workspace my-voice reference examples through the native tool path",
       "Preserves the tentative suggestion and possible benefit",
       "Returns only the rewrite with conversational rhythm",
       "Does not browse or inspect unrelated apps or memory"
@@ -91,7 +91,7 @@
       }
     ],
     "assertions": [
-      "Does not load or announce write-like-me without explicit invocation",
+      "Does not load or announce my-voice without explicit invocation",
       "Completes the requested rewrite",
       "Check the trace and loaded instructions rather than treating punctuation as proof of activation"
     ]

@@ -1,9 +1,9 @@
 {
-  "skill_name": "write-like-me",
+  "skill_name": "my-voice",
   "evals": [
     {
       "id": "E01",
-      "prompt": "$write-like-me clean this up: hey, quick thing\n\ngot the draft working but the last part is still weird\nany idea?",
+      "prompt": "$my-voice clean this up: hey, quick thing\n\ngot the draft working but the last part is still weird\nany idea?",
       "expected_output": "Make only useful corrections while retaining casual wording and conversational line rhythm.",
       "assertions": [
         "Uses the casual register because none was named",
@@ -14,7 +14,7 @@
     },
     {
       "id": "E02",
-      "prompt": "$write-like-me rewrite this but keep the energy: wait, really?!\nthat actually worked",
+      "prompt": "$my-voice rewrite this but keep the energy: wait, really?!\nthat actually worked",
       "expected_output": "Preserve the emphasis and short-line punctuation without manufacturing extra excitement.",
       "assertions": [
         "Preserves the question and exclamation marks",
@@ -25,7 +25,7 @@
     },
     {
       "id": "E03",
-      "prompt": "$write-like-me polished: hey, saw the update\nlooks good mostly\n\nthe last bit is kinda confusing though\ncan you clarify?",
+      "prompt": "$my-voice polished: hey, saw the update\nlooks good mostly\n\nthe last bit is kinda confusing though\ncan you clarify?",
       "expected_output": "Produce a clearer conversational version while retaining the casual message rhythm.",
       "assertions": [
         "Smooths the confusing fragment and rough transition",
@@ -38,7 +38,7 @@
     },
     {
       "id": "E04",
-      "prompt": "$write-like-me business: tell them the review is complete and ask for confirmation by Thursday",
+      "prompt": "$my-voice business: tell them the review is complete and ask for confirmation by Thursday",
       "expected_output": "Write a concise, calm message with the result and requested next step.",
       "assertions": [
         "States that the review is complete",
@@ -49,7 +49,7 @@
     },
     {
       "id": "E05",
-      "prompt": "$write-like-me formal: the proposal is fine but we need the signed copy before we can start",
+      "prompt": "$my-voice formal: the proposal is fine but we need the signed copy before we can start",
       "expected_output": "Use complete, precise sentences while preserving the condition on starting.",
       "assertions": [
         "Preserves the requirement for a signed copy before work begins",
@@ -61,7 +61,7 @@
     },
     {
       "id": "E06",
-      "prompt": "$write-like-me minimally fix: honestly I am not sure this is the right move yet",
+      "prompt": "$my-voice minimally fix: honestly I am not sure this is the right move yet",
       "expected_output": "Preserve uncertainty and stance while making only necessary corrections.",
       "assertions": [
         "Does not turn uncertainty into agreement or rejection",
@@ -72,7 +72,7 @@
     },
     {
       "id": "E07",
-      "prompt": "$write-like-me write a confirmation that must include the delivery date. No date was provided, and the date cannot be omitted.",
+      "prompt": "$my-voice write a confirmation that must include the delivery date. No date was provided, and the date cannot be omitted.",
       "expected_output": "Ask one concise question for the missing date instead of inventing it.",
       "assertions": [
         "Asks no more than one question",
@@ -84,7 +84,7 @@
     },
     {
       "id": "E08",
-      "prompt": "$write-like-me reply that the change works; no recipient name was provided",
+      "prompt": "$my-voice reply that the change works; no recipient name was provided",
       "expected_output": "Draft the concise reply without blocking on a nonessential recipient name.",
       "assertions": [
         "Does not ask for a name",
@@ -95,7 +95,7 @@
     },
     {
       "id": "E09",
-      "prompt": "$write-like-me business, warmer and shorter: confirm that the request was received and will be reviewed tomorrow",
+      "prompt": "$my-voice business, warmer and shorter: confirm that the request was received and will be reviewed tomorrow",
       "expected_output": "Apply the local warmth and brevity modifiers without creating a new style or changing facts.",
       "assertions": [
         "Confirms receipt and tomorrow's review",
@@ -106,7 +106,7 @@
     },
     {
       "id": "E10",
-      "prompt": "$write-like-me polished: Keep `cacheKey` stable. See [the guide](https://example.invalid/guide). Do not change:\n```ts\nconst cacheKey = id\n```",
+      "prompt": "$my-voice polished: Keep `cacheKey` stable. See [the guide](https://example.invalid/guide). Do not change:\n```ts\nconst cacheKey = id\n```",
       "expected_output": "Improve surrounding prose while preserving the identifier, link, and code fence exactly.",
       "assertions": [
         "Preserves both `cacheKey` occurrences",
@@ -117,7 +117,7 @@
     },
     {
       "id": "E11",
-      "prompt": "$write-like-me give me two versions of this, casual and formal: the schedule changed and the meeting is now Friday",
+      "prompt": "$my-voice give me two versions of this, casual and formal: the schedule changed and the meeting is now Friday",
       "expected_output": "Return exactly two meaning-equivalent versions with visibly different requested registers.",
       "assertions": [
         "Produces exactly two versions",
@@ -128,7 +128,7 @@
     },
     {
       "id": "E12",
-      "prompt": "$write-like-me rewrite only the first paragraph:\n\nthis part is kinda confusing and needs cleaned up\n\nKeep this paragraph unchanged: \"ship when ready.\"",
+      "prompt": "$my-voice rewrite only the first paragraph:\n\nthis part is kinda confusing and needs cleaned up\n\nKeep this paragraph unchanged: \"ship when ready.\"",
       "expected_output": "Respect the editing boundary and exact quotation instead of normalizing the whole source.",
       "assertions": [
         "Changes only the first paragraph",
@@ -139,7 +139,7 @@
     },
     {
       "id": "E13",
-      "prompt": "$write-like-me use this correspondence for the current reply, but do not retain it: \"Can you send the summary today?\" Reply that it will be sent today.",
+      "prompt": "$my-voice use this correspondence for the current reply, but do not retain it: \"Can you send the summary today?\" Reply that it will be sent today.",
       "expected_output": "Use supplied context only for the current result and persist none of it.",
       "assertions": [
         "Does not write source text or personal details into skill files",
@@ -150,7 +150,7 @@
     },
     {
       "id": "E14",
-      "prompt": "$write-like-me popraw to, ale zachowaj język: hej, chyba już działa\nmożesz sprawdzić?",
+      "prompt": "$my-voice popraw to, ale zachowaj język: hej, chyba już działa\nmożesz sprawdzić?",
       "expected_output": "Preserve the source language and casual rhythm unless translation was requested.",
       "assertions": [
         "Keeps the result in Polish",
@@ -161,7 +161,7 @@
     },
     {
       "id": "E15",
-      "prompt": "$write-like-me clean this up but keep the energy: finally fixed it 😅🙌\nthat took forever 😂!",
+      "prompt": "$my-voice clean this up but keep the energy: finally fixed it 😅🙌\nthat took forever 😂!",
       "expected_output": "Improve the wording while preserving the source emoji and punctuation style without escalating it.",
       "assertions": [
         "Preserves the three source emojis",
@@ -173,7 +173,7 @@
     },
     {
       "id": "E16",
-      "prompt": "$write-like-me business: can you send the revised estimate by Friday?",
+      "prompt": "$my-voice business: can you send the revised estimate by Friday?",
       "expected_output": "Use a concise, conventional request; could you is a mild preference, not a mandatory substitution.",
       "assertions": [
         "Preserves the Friday deadline",
@@ -183,7 +183,7 @@
     },
     {
       "id": "E17",
-      "prompt": "$write-like-me formal: the release is still subject to written approval",
+      "prompt": "$my-voice formal: the release is still subject to written approval",
       "expected_output": "Preserve the approval condition using plain formal wording.",
       "assertions": [
         "Accepts is still subject to approval or remains subject to approval",

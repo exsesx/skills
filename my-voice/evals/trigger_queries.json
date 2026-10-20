@@ -1,25 +1,25 @@
 [
   {
     "id": "T01",
-    "query": "$write-like-me clean this up but keep it casual",
+    "query": "$my-voice clean this up but keep it casual",
     "should_trigger": true,
     "note": "explicit Codex invocation"
   },
   {
     "id": "T02",
-    "query": "$write-like-me business: make this shorter and clearer",
+    "query": "$my-voice business: make this shorter and clearer",
     "should_trigger": true,
     "note": "explicit register selection"
   },
   {
     "id": "T03",
-    "query": "/write-like-me formal: rewrite this paragraph",
+    "query": "/my-voice formal: rewrite this paragraph",
     "should_trigger": true,
     "note": "explicit Claude Code invocation"
   },
   {
     "id": "T04",
-    "query": "$write-like-me give me a casual and a formal version",
+    "query": "$my-voice give me a casual and a formal version",
     "should_trigger": true,
     "note": "explicit multi-register request"
   },
@@ -75,13 +75,13 @@
   },
   {
     "id": "T15",
-    "query": "Explain what the literal command `$write-like-me` means. Do not rewrite any text.",
+    "query": "Explain what the literal command `$my-voice` means. Do not rewrite any text.",
     "should_trigger": false,
     "note": "a quoted command being discussed is not an invocation"
   },
   {
     "id": "T16",
-    "query": "Improve the write-like-me skill instructions in this repository.",
+    "query": "Improve the my-voice skill instructions in this repository.",
     "should_trigger": false,
     "note": "editing the skill package is not applying its voice to the response"
   }

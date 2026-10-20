@@ -1,13 +1,13 @@
 ---
-name: write-like-me
+name: my-voice
 description: >-
   Writes or rewrites text in the user's personal voice using a casual
   (default), polished, business, or formal register. Use only when the user
-  explicitly invokes write-like-me.
+  explicitly invokes my-voice.
 disable-model-invocation: true
 ---
 
-# Write Like Me
+# My Voice
 
 Apply this profile only to the request that explicitly invokes it. Require
 explicit invocation again for a later request. Finish in one pass whenever

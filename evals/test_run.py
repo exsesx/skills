@@ -135,7 +135,7 @@ class ExecutionTests(unittest.TestCase):
 
     def test_installed_skill_is_disabled_without_losing_existing_overrides(self):
         home, codex_home = self.root / "home", self.root / "codex"
-        skill = home / ".agents/skills/write-like-me/SKILL.md"
+        skill = home / ".agents/skills/my-voice/SKILL.md"
         skill.parent.mkdir(parents=True)
         skill.write_text("A synthetic installed skill")
         codex_home.mkdir()
@@ -151,7 +151,7 @@ class ExecutionTests(unittest.TestCase):
         day = self.root / "2026/09/06"
         day.mkdir(parents=True)
         record = {"type": "response_item", "payload": {"type": "message", "role": "user", "content": [
-            {"type": "input_text", "text": "<skill>\n<name>write-like-me</name>\n<path>/old/SKILL.md</path>\nbody"}]}}
+            {"type": "input_text", "text": "<skill>\n<name>my-voice</name>\n<path>/old/SKILL.md</path>\nbody"}]}}
         (day / "rollout-session-1.jsonl").write_text(json.dumps(record))
         result = codex_metadata([{"type": "thread.started", "thread_id": "session-1"}], self.root)
         self.assertEqual(result["loaded_skill_paths"], ["/old/SKILL.md"])
@@ -182,7 +182,7 @@ class ExecutionTests(unittest.TestCase):
         (self.root / "final.txt").write_text("A plausible response")
         with patch("run.capture", return_value={"returncode": 0, "seconds": 0}), patch(
             "run.codex_metadata", return_value={"model_observed": "gpt-6-astra", "effort_observed": "low",
-                                               "loaded_skill_paths": ["/old/write-like-me/SKILL.md"]}
+                                               "loaded_skill_paths": ["/old/my-voice/SKILL.md"]}
         ):
             outcome = execute(self.args, self.root, "Synthetic request", read_only=True)
         self.assertIn("error", outcome)

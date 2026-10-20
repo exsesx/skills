@@ -18,7 +18,7 @@ import tomllib
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ("git-fatality", "write-like-me")
+SKILLS = ("git-fatality", "my-voice")
 GIT_CASES = {
     "publish": "Publish this branch to origin under its current name and set its upstream. Do not commit or create a PR.",
     "push-dirty": "Push this branch to its upstream. Do not commit or create a PR.",
@@ -193,7 +193,7 @@ def capture(command, prompt, directory, env, timeout):
 
 
 def record_run(args):
-    paths = [p for folder in ("git-fatality", "write-like-me", "evals")
+    paths = [p for folder in ("git-fatality", "my-voice", "evals")
              for p in (ROOT / folder).rglob("*")
              if p.is_file() and p.suffix in (".md", ".yaml", ".json", ".py")
              and "results" not in p.relative_to(ROOT).parts]
@@ -359,8 +359,8 @@ def run_grade(args):
 
 
 def run_writing(args):
-    cases = json.loads((ROOT / "write-like-me/evals/writing.json").read_text())
-    skill = (ROOT / "write-like-me/SKILL.md").read_text()
+    cases = json.loads((ROOT / "my-voice/evals/writing.json").read_text())
+    skill = (ROOT / "my-voice/SKILL.md").read_text()
     rng, key, review = random.Random(args.seed), {}, []
     for case in cases:
         if args.case != "all" and case["id"] != args.case:
@@ -410,7 +410,7 @@ def unchanged_state(directory, expected):
 
 def native_cases():
     cases = []
-    for skill in ("git-fatality", "write-like-me"):
+    for skill in ("git-fatality", "my-voice"):
         for case in json.loads((ROOT / skill / "evals/conversations.json").read_text()):
             cases.append({**case, "id": skill + "-" + case["id"]})
     return cases
@@ -425,7 +425,7 @@ def run_native(args):
         expected = prepare_case(directory, case["fixture"]) if case.get("fixture") else None
         directory.mkdir(exist_ok=True)
         skills = directory / ".agents/skills"
-        for name in ("git-fatality", "write-like-me"):
+        for name in ("git-fatality", "my-voice"):
             shutil.copytree(ROOT / name, skills / name)
         if case.get("companion"):
             companion = skills / "eval-concise"
